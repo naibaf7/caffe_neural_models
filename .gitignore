@@ -1,3 +1,3 @@
 *.caffemodel
 *.solverstate
-dataset_*
+/dataset_*
