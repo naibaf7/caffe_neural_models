@@ -33,8 +33,8 @@ train {
 }
 
 process {
-  process_net: "../net_sk_9out/neuraltissue_process.prototxt"
-  caffemodel: "../net_sk_9out/neuraltissue_iter_30000.caffemodel"
+  process_net: "neuraltissue_9out_process.prototxt"
+  caffemodel: "neuraltissue_9out_iter_30000.caffemodel"
   input {
     padding_size: 102
     patch_size: 128

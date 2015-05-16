@@ -30,11 +30,8 @@ max_iter: 100000
 ########################################################################
 # Snapshot intermediate results
 snapshot: 2000
-snapshot_prefix: "../project_data/net_sk_3out/neuraltissue"
+snapshot_prefix: "neuraltissue_3out"
 ########################################################################
 # Display every 'display' iterations
 display: 50
-########################################################################
-# Solver mode: 0 for CPU and 1 for GPU
-solver_mode: 1
 ########################################################################

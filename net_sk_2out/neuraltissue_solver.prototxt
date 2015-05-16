@@ -30,7 +30,7 @@ max_iter: 100000
 ########################################################################
 # Snapshot intermediate results
 snapshot: 2000
-snapshot_prefix: "../project_data/net_sk_2out/neuraltissue"
+snapshot_prefix: "neuraltissue_2out"
 ########################################################################
 # Display every 'display' iterations
 display: 50
