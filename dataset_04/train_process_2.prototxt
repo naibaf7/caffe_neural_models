@@ -1,0 +1,61 @@
+train {
+  solver: "../net_sk_2out/neuraltissue_solver.prototxt"
+  input {
+    padding_size: 102
+    patch_size: 64
+    channels: 3
+    labels: 2
+    batch_size: 1
+    raw_images: "train/raw"
+    label_images: "train/labels"
+    preprocessor {
+      normalization: true
+      rotation: true
+      mirror: true
+      clahe {
+        clip: 4.0
+      }
+      crop {
+        imagecrop: 1
+        labelcrop: 0
+      }
+      blur {
+        mean: 0.0
+        std: 0.1
+        ksize: 5
+      }
+      histeq {
+        patch_prior: false
+        masking: false
+      }
+    }
+  }
+}
+
+process {
+  process_net: "../net_sk_2out/neuraltissue_process.prototxt"
+  caffemodel: "../net_sk_2out/neuraltissue_iter_10000.caffemodel"
+  input {
+    padding_size: 102
+    patch_size: 128
+    channels: 3
+    labels: 2
+    batch_size: 1
+    raw_images: "input"
+    preprocessor {
+      normalization: true
+      clahe {
+        clip: 4.0
+      }
+      crop {
+        imagecrop: 1
+        labelcrop: 0
+      }
+    }
+  }
+  output {
+    format: "tif"
+    fp32_out: false
+    output: "output"
+  }
+}

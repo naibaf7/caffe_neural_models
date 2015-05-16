@@ -1,8 +1,8 @@
 # The training protocol buffer definition
-train_net: "../project_data/net_sk_2out/neuraltissue_train.prototxt"
+train_net: "../net_sk_2out/neuraltissue_train.prototxt"
 ########################################################################
 # The testing protocol buffer definition
-test_net: "../project_data/net_sk_2out/neuraltissue_test.prototxt"
+test_net: "../net_sk_2out/neuraltissue_test.prototxt"
 ########################################################################
 # Test_iter specifies how many forward passes the test should carry out.
 # it is the number of batches shown, then 
@@ -34,7 +34,4 @@ snapshot_prefix: "../project_data/net_sk_2out/neuraltissue"
 ########################################################################
 # Display every 'display' iterations
 display: 50
-########################################################################
-# Solver mode: 0 for CPU and 1 for GPU
-solver_mode: 1
 ########################################################################
