@@ -1,4 +1,5 @@
 train {
+  #solverstate: "neuraltissue_2out_iter_2000.solverstate"
   solver: "../net_sk_2out/neuraltissue_solver.prototxt"
   input {
     padding_size: 102
@@ -25,7 +26,7 @@ train {
         ksize: 5
       }
       histeq {
-        patch_prior: false
+        patch_prior: true
         masking: false
       }
     }
