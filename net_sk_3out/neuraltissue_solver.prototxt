@@ -1,8 +1,8 @@
 # The training protocol buffer definition
-train_net: "../project_data/net_sk_3out/neuraltissue_train.prototxt"
+train_net: "../net_sk_3out/neuraltissue_train.prototxt"
 ########################################################################
 # The testing protocol buffer definition
-test_net: "../project_data/net_sk_3out/neuraltissue_test.prototxt"
+test_net: "../net_sk_3out/neuraltissue_test.prototxt"
 ########################################################################
 # Test_iter specifies how many forward passes the test should carry out.
 # it is the number of batches shown, then 
