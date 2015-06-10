@@ -15,16 +15,9 @@ layer {
   }
 }
 layer {
-  name: "datadistort"
-  type: "DataRandTransform"
-  bottom: "data"
-  top: "datadistort"
-  apply_normalization: true
-}
-layer {
   name: "conv1"
   type: "Convolution"
-  bottom: "datadistort"
+  bottom: "data"
   top: "conv1"
   param {
     lr_mult: 1
