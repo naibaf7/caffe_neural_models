@@ -1,8 +1,8 @@
 # The training protocol buffer definition
-train_net: "../net_u_9out/neuraltissue_train.prototxt"
+train_net: "../net_u_9out/neuraltissue_net.prototxt"
 ########################################################################
 # The testing protocol buffer definition
-# test_net: "../net_u_9out/neuraltissue_test.prototxt"
+# test_net: "../net_u_9out/neuraltissue_net.prototxt"
 ########################################################################
 # Test_iter specifies how many forward passes the test should carry out.
 # it is the number of batches shown, then 
@@ -13,9 +13,9 @@ train_net: "../net_u_9out/neuraltissue_train.prototxt"
 ########################################################################
 # The base learning rate, momentum and the weight decay of the network.
 # base_lr: 0.05
-base_lr: 0.01
+base_lr: 0.0005
 momentum: 0.99
-weight_decay: 0.0005
+weight_decay: 0.00005
 ########################################################################
 # The learning rate policy
 lr_policy: "inv"

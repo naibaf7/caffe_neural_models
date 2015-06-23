@@ -1,9 +1,9 @@
 train {
-  #solverstate: "neuraltissue_9out_iter_30000.solverstate"
-  solver: "../net_sk_9out/neuraltissue_solver.prototxt"
+  # solverstate: "neuraltissue_usk_9out_iter_14000.solverstate"
+  solver: "../net_usk_9out/neuraltissue_solver.prototxt"
   input {
-    padding_size: 102
-    patch_size: 64
+    padding_size: 180
+    patch_size: 512
     channels: 3
     labels: 9
     batch_size: 1
@@ -17,7 +17,7 @@ train {
         clip: 4.0
       }
       crop {
-        imagecrop: 1
+        imagecrop: 0
         labelcrop: 0
       }
       blur {
@@ -26,7 +26,7 @@ train {
         ksize: 5
       }
       histeq {
-        patch_prior: true
+        patch_prior: false
         masking: false
       }
     }
@@ -34,11 +34,11 @@ train {
 }
 
 process {
-  process_net: "../net_sk_9out/neuraltissue_process.prototxt"
-  caffemodel: "neuraltissue_9out_iter_44000.caffemodel"
+  process_net: "../net_usk_9out/neuraltissue_process.prototxt"
+  caffemodel: "neuraltissue_usk_9out_iter_2000.caffemodel"
   input {
-    padding_size: 102
-    patch_size: 128
+    padding_size: 180
+    patch_size: 512
     channels: 3
     labels: 9
     batch_size: 1
@@ -49,14 +49,14 @@ process {
         clip: 4.0
       }
       crop {
-        imagecrop: 1
+        imagecrop: 0
         labelcrop: 0
       }
     }
   }
   filter_output {
-    output_filters: false
-    output: "sk_filters"
+    output_filters: true
+    output: "usk_filters"
   }
   output {
     format: "tif"

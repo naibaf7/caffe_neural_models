@@ -1,11 +1,11 @@
 train {
-  #solverstate: "neuraltissue_9out_iter_30000.solverstate"
-  solver: "../net_sk_9out/neuraltissue_solver.prototxt"
+  solverstate: "neuraltissue_u_2out_iter_8000.solverstate"
+  solver: "../net_u_2out/neuraltissue_solver.prototxt"
   input {
-    padding_size: 102
-    patch_size: 64
+    padding_size: 184
+    patch_size: 388
     channels: 3
-    labels: 9
+    labels: 2
     batch_size: 1
     raw_images: "train/raw"
     label_images: "train/labels"
@@ -17,7 +17,7 @@ train {
         clip: 4.0
       }
       crop {
-        imagecrop: 1
+        imagecrop: 0
         labelcrop: 0
       }
       blur {
@@ -26,7 +26,7 @@ train {
         ksize: 5
       }
       histeq {
-        patch_prior: true
+        patch_prior: false
         masking: false
       }
     }
@@ -34,13 +34,13 @@ train {
 }
 
 process {
-  process_net: "../net_sk_9out/neuraltissue_process.prototxt"
-  caffemodel: "neuraltissue_9out_iter_44000.caffemodel"
+  process_net: "../net_u_2out/neuraltissue_net.prototxt"
+  caffemodel: "neuraltissue_u_2out_iter_8000.caffemodel"
   input {
-    padding_size: 102
-    patch_size: 128
+    padding_size: 184
+    patch_size: 388
     channels: 3
-    labels: 9
+    labels: 2
     batch_size: 1
     raw_images: "input"
     preprocessor {
@@ -49,18 +49,18 @@ process {
         clip: 4.0
       }
       crop {
-        imagecrop: 1
+        imagecrop: 0
         labelcrop: 0
       }
     }
   }
   filter_output {
     output_filters: false
-    output: "sk_filters"
+    output: "u_filters"
   }
   output {
     format: "tif"
-    fp32_out: false
+    fp32_out: true
     output: "output"
   }
 }
