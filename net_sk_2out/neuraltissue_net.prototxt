@@ -181,10 +181,10 @@ layer {
   }
 }
 layer {
-  name: "ip4"
+  name: "ip1"
   type: "ConvolutionSK"
   bottom: "pool3"
-  top: "ip4"
+  top: "ip1"
   param {
     lr_mult: 1
   }
@@ -208,14 +208,14 @@ layer {
 layer {
   name: "relu4"
   type: "ReLU"
-  bottom: "ip4"
-  top: "ip4"
+  bottom: "ip1"
+  top: "ip1"
 }
 layer {
-  name: "ip5"
+  name: "ip2"
   type: "ConvolutionSK"
-  bottom: "ip4"
-  top: "ip5"
+  bottom: "ip1"
+  top: "ip2"
   param {
     lr_mult: 1
   }
@@ -239,14 +239,14 @@ layer {
 layer {
   name: "relu5"
   type: "ReLU"
-  bottom: "ip5"
-  top: "ip5"
+  bottom: "ip3"
+  top: "ip3"
 }
 layer {
-  name: "ip6"
+  name: "ip3"
   type: "ConvolutionSK"
-  bottom: "ip5"
-  top: "ip6"
+  bottom: "ip2"
+  top: "ip3"
   param {
     lr_mult: 1
   }
@@ -271,7 +271,7 @@ layer {
   include: {phase: TRAIN}
   name: "loss"
   type: "SoftmaxWithLoss"
-  bottom: "ip6"
+  bottom: "ip3"
   bottom: "label"
   loss_param {
     ignore_label: -1

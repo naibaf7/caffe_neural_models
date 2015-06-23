@@ -35,7 +35,7 @@ layer {
   include: {phase: TEST}
   name: "silence"
   type: "Silence"
-  bottom: "label"
+  bottom: "datai"
 }
 layer {
   name: "conv1"
