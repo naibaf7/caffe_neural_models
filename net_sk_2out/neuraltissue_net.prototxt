@@ -239,8 +239,8 @@ layer {
 layer {
   name: "relu5"
   type: "ReLU"
-  bottom: "ip3"
-  top: "ip3"
+  bottom: "ip2"
+  top: "ip2"
 }
 layer {
   name: "ip3"
@@ -282,6 +282,6 @@ layer {
   include: {phase: TEST}
   name: "prob"
   type: "Softmax"
-  bottom: "ip6"
+  bottom: "ip3"
   top: "prob"
 }

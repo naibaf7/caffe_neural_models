@@ -1,9 +1,9 @@
 train {
-  # solverstate: "neuraltissue_usk_9out_iter_6000.solverstate"
-  solver: "../net_usk_9out/neuraltissue_solver.prototxt"
+  solverstate: "neuraltissue_u_9out_iter_18000.solverstate"
+  solver: "../net_u_9out/neuraltissue_solver.prototxt"
   input {
-    padding_size: 180
-    patch_size: 512
+    padding_size: 184
+    patch_size: 388
     channels: 3
     labels: 9
     batch_size: 1
@@ -34,11 +34,11 @@ train {
 }
 
 process {
-  process_net: "../net_usk_9out/neuraltissue_net.prototxt"
-  caffemodel: "neuraltissue_usk_9out_iter_6000.caffemodel"
+  process_net: "../net_u_9out/neuraltissue_net.prototxt"
+  caffemodel: "neuraltissue_u_9out_iter_18000.caffemodel"
   input {
-    padding_size: 180
-    patch_size: 512
+    padding_size: 184
+    patch_size: 388
     channels: 3
     labels: 9
     batch_size: 1
@@ -56,7 +56,7 @@ process {
   }
   filter_output {
     output_filters: false
-    output: "usk_filters"
+    output: "u_filters"
   }
   output {
     format: "tif"
