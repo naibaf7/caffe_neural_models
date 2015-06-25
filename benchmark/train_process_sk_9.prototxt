@@ -33,7 +33,7 @@ train {
 }
 
 process {
-  process_net: "../net_sk_9out/neuraltissue_process.prototxt"
+  process_net: "../net_sk_9out/neuraltissue_net.prototxt"
   input {
     padding_size: 102
     patch_size: 128
@@ -64,5 +64,9 @@ process {
 }
 
 benchmark {
-  train_
+  train_index: 0
+  process_index: 0
+  output: "sk_benchmark"
+  warmup_runs: 2
+  bench_runs: 5
 }

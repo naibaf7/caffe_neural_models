@@ -69,7 +69,7 @@ layer {
     kstride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.12
+      std: 0.01
     }
     bias_filler {
       type: "constant"
@@ -112,7 +112,7 @@ layer {
     kstride: 2
     weight_filler {
       type: "gaussian"
-      std: 0.04
+      std: 0.01
     }
     bias_filler {
       type: "constant"
@@ -155,7 +155,7 @@ layer {
     kstride: 4
     weight_filler {
       type: "gaussian"
-      std: 0.04
+      std: 0.01
     }
     bias_filler {
       type: "constant"
@@ -229,7 +229,7 @@ layer {
     kstride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.04
+      std: 0.01
     }
     bias_filler {
       type: "constant"
@@ -260,7 +260,7 @@ layer {
     kstride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.06
+      std: 0.01
     }
     bias_filler {
       type: "constant"
