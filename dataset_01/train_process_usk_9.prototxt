@@ -26,8 +26,8 @@ train {
         ksize: 5
       }
       histeq {
-        patch_prior: false
-        masking: false
+        patch_prior: true
+        masking: true
       }
     }
   }
