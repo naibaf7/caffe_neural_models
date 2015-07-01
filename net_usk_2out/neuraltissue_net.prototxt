@@ -617,15 +617,24 @@ layer {
     }
   }
 }
+#layer {
+#  include: {phase: TRAIN}
+#  name: "loss"
+#  type: "SoftmaxWithLoss"
+#  bottom: "ip3"
+#  bottom: "label"
+#  loss_param {
+#    ignore_label: -1
+#    normalize: true
+#  }
+#}
 layer {
   include: {phase: TRAIN}
   name: "loss"
-  type: "SoftmaxWithLoss"
+  type: "MalisLoss"
   bottom: "ip3"
   bottom: "label"
   loss_param {
-    ignore_label: -1
-    normalize: true
   }
 }
 layer {
