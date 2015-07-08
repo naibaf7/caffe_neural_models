@@ -650,6 +650,10 @@ layer {
   bottom: "label_a"
   top: "prob_affinity"
   top: "label_affinity"
+  affinity_param {
+    offset: 1
+    offset: 0
+  }
 }
 layer {
   include: {phase: TRAIN}
