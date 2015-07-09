@@ -617,59 +617,21 @@ layer {
     }
   }
 }
-#layer {
-#  include: {phase: TRAIN}
-#  name: "loss"
-#  type: "SoftmaxWithLoss"
-#  bottom: "ip3"
-#  bottom: "label"
-#  loss_param {
-#    ignore_label: -1
-#    normalize: true
-#  }
-#}
 layer {
+  include: {phase: TRAIN}
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip3"
+  bottom: "label"
+  loss_param {
+    ignore_label: -1
+    normalize: true
+  }
+}
+layer {
+  include: {phase: TEST}
   name: "prob"
   type: "Softmax"
   bottom: "ip3"
   top: "prob"
 }
-layer {
-  include: {phase: TRAIN}
-  name: "split"
-  type: "Split"
-  bottom: "label"
-  top: "label_a"
-  top: "label_b"
-}
-layer {
-  include: {phase: TRAIN}
-  name: "affinity"
-  type: "Affinity"
-  bottom: "prob"
-  bottom: "label_a"
-  top: "prob_affinity"
-  top: "label_affinity"
-  affinity_param {
-    offset: 1
-    offset: 0
-  }
-}
-layer {
-  include: {phase: TRAIN}
-  name: "components"
-  type: "ConnectedComponent"
-  bottom: "label_b"
-  top: "component"
-}
-layer {
-  include: {phase: TRAIN}
-  name: "loss"
-  type: "MalisLoss"
-  bottom: "prob_affinity"
-  bottom: "label_affinity"
-  bottom: "component"
-  loss_param {
-  }
-}
-

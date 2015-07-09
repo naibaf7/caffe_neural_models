@@ -10,6 +10,26 @@ train {
     raw_images: "train/raw"
     label_images: "train/labels"
     preprocessor {
+      label_consolidate {
+        # 0 -
+        label: 0
+        # 1 /
+        label: 0
+        # 2 |
+        label: 0
+        # 3 \
+        label: 0
+        # 4 +
+        label: 0
+        # 5 glia
+        label: 0
+        # 6 mito
+        label: 1
+        # 7 synapse
+        label: 0
+        # 8 interior
+        label: 1
+      }
       normalization: true
       rotation: true
       mirror: true
@@ -26,7 +46,7 @@ train {
         ksize: 5
       }
       histeq {
-        patch_prior: false
+        patch_prior: true
         masking: false
       }
     }
@@ -35,7 +55,7 @@ train {
 
 process {
   process_net: "../net_usk_2out/neuraltissue_net.prototxt"
-  caffemodel: "neuraltissue_usk_2out_iter_2000.caffemodel"
+  caffemodel: "neuraltissue_usk_2out_iter_12000.caffemodel"
   input {
     padding_size: 180
     patch_size: 512
@@ -56,11 +76,11 @@ process {
   }
   filter_output {
     output_filters: false
-    output: "usk_filters"
+    output: "sk_filters"
   }
   output {
     format: "tif"
-    fp32_out: true
+    fp32_out: false
     output: "output"
   }
 }
