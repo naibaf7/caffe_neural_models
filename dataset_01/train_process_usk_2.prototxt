@@ -75,8 +75,8 @@ process {
     }
   }
   filter_output {
-    output_filters: false
-    output: "sk_filters"
+    output_filters: true
+    output: "usk_filters"
   }
   output {
     format: "tif"

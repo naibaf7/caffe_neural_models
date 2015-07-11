@@ -1,4 +1,5 @@
 *.caffemodel
 *.solverstate
 dataset_05
+dataset_06
 *.fuse*
