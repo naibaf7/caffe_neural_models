@@ -1,0 +1,86 @@
+train {
+  # solverstate: "neuraltissue_u_2out_iter_10000.solverstate"
+  solver: "../net_u_2out/neuraltissue_solver.prototxt"
+  input {
+    padding_size: 184
+    patch_size: 388
+    channels: 3
+    labels: 2
+    batch_size: 1
+    raw_images: "train/raw"
+    label_images: "train/labels"
+    preprocessor {
+      label_consolidate {
+        # 0 -
+        label: 0
+        # 1 /
+        label: 0
+        # 2 |
+        label: 0
+        # 3 \
+        label: 0
+        # 4 +
+        label: 0
+        # 5 glia
+        label: 0
+        # 6 mito
+        label: 1
+        # 7 synapse
+        label: 0
+        # 8 interior
+        label: 1
+      }
+      normalization: true
+      rotation: true
+      mirror: true
+      clahe {
+        clip: 4.0
+      }
+      crop {
+        imagecrop: 0
+        labelcrop: 0
+      }
+      blur {
+        mean: 0.0
+        std: 0.1
+        ksize: 5
+      }
+      histeq {
+        patch_prior: false
+        masking: false
+      }
+    }
+  }
+}
+
+process {
+  process_net: "../net_u_2out/neuraltissue_net.prototxt"
+  caffemodel: "neuraltissue_u_2out_iter_20000.caffemodel"
+  input {
+    padding_size: 184
+    patch_size: 388
+    channels: 3
+    labels: 2
+    batch_size: 1
+    raw_images: "validate_raw"
+    preprocessor {
+      normalization: true
+      clahe {
+        clip: 4.0
+      }
+      crop {
+        imagecrop: 0
+        labelcrop: 0
+      }
+    }
+  }
+  filter_output {
+    output_filters: false
+    output: "u_filters"
+  }
+  output {
+    format: "tif"
+    fp32_out: true
+    output: "validate_output"
+  }
+}

@@ -2,4 +2,7 @@
 *.solverstate
 dataset_05
 dataset_06
+dataset_07
 *.fuse*
+*.pdf
+*.ps

@@ -13,9 +13,9 @@ train_net: "../net_u_2out/neuraltissue_net.prototxt"
 ########################################################################
 # The base learning rate, momentum and the weight decay of the network.
 # base_lr: 0.05
-base_lr: 0.0005
+base_lr: 0.00005
 momentum: 0.99
-weight_decay: 0.00005
+weight_decay: 0.000005
 ########################################################################
 # The learning rate policy
 lr_policy: "inv"

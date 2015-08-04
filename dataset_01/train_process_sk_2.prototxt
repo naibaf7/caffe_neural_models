@@ -1,9 +1,9 @@
 train {
-  # solverstate: "neuraltissue_sk_2out_iter_16000.solverstate"
+  solverstate: "neuraltissue_sk_2out_iter_4000.solverstate"
   solver: "../net_sk_2out/neuraltissue_solver.prototxt"
   input {
     padding_size: 102
-    patch_size: 64
+    patch_size: 128
     channels: 3
     labels: 2
     batch_size: 1
@@ -46,8 +46,8 @@ train {
         ksize: 5
       }
       histeq {
-        patch_prior: true
-        masking: true
+        patch_prior: false
+        masking: false
       }
     }
   }
@@ -55,14 +55,14 @@ train {
 
 process {
   process_net: "../net_sk_2out/neuraltissue_net.prototxt"
-  caffemodel: "neuraltissue_sk_2out_iter_10000.caffemodel"
+  caffemodel: "neuraltissue_sk_2out_iter_20000.caffemodel"
   input {
     padding_size: 102
     patch_size: 128
     channels: 3
-    labels: 9
+    labels: 2
     batch_size: 1
-    raw_images: "input"
+    raw_images: "validate_raw"
     preprocessor {
       normalization: true
       clahe {
@@ -80,7 +80,7 @@ process {
   }
   output {
     format: "tif"
-    fp32_out: false
-    output: "output"
+    fp32_out: true
+    output: "validate_output"
   }
 }

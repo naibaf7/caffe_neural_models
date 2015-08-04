@@ -1,5 +1,5 @@
 train {
-  solverstate: "neuraltissue_u_9out_iter_18000.solverstate"
+  solverstate: "neuraltissue_u_9out_iter_26000.solverstate"
   solver: "../net_u_9out/neuraltissue_solver.prototxt"
   input {
     padding_size: 184
@@ -35,7 +35,7 @@ train {
 
 process {
   process_net: "../net_u_9out/neuraltissue_net.prototxt"
-  caffemodel: "neuraltissue_u_9out_iter_18000.caffemodel"
+  caffemodel: "neuraltissue_u_9out_iter_26000.caffemodel"
   input {
     padding_size: 184
     patch_size: 388
