@@ -1,5 +1,6 @@
 *.caffemodel
 *.solverstate
+dataset_04
 dataset_05
 dataset_06
 dataset_07
