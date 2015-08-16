@@ -1,6 +1,6 @@
-## Dataset licences
+# Dataset licences
 
-# When using dataset_01, please cite the following source:
+### When using dataset_01, please cite the following source:
 ```
 @online{DS1ssTEM,
 	title = {Segmented anisotropic ssTEM dataset of neural tissue},
@@ -13,7 +13,7 @@
 
 ```
 
-# When using dataset_02, please cite the following source:
+### When using dataset_02, please cite the following source:
 ```
 @online{ISBI2012,
   title = {ISBI 2012 Challenge},
