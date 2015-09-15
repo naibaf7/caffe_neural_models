@@ -1,3 +1,8 @@
+# Citation
+Please cite:
+http://arxiv.org/format/1509.03371
+when using this repository for research.
+
 # Dataset licences
 
 ### When using dataset_01, please cite the following source:
