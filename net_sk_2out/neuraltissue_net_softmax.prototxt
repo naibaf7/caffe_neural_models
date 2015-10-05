@@ -53,7 +53,7 @@ layer {
 }
 layer {
   name: "conv1"
-  type: "ConvolutionSK"
+  type: "Convolution"
   bottom: "data"
   top: "conv1"
   param {
@@ -84,7 +84,7 @@ layer {
 }
 layer {
   name: "pool1"
-  type: "PoolingSK"
+  type: "Pooling"
   bottom: "conv1"
   top: "pool1"
   pooling_param {
@@ -96,7 +96,7 @@ layer {
 }
 layer {
   name: "conv2"
-  type: "ConvolutionSK"
+  type: "Convolution"
   bottom: "pool1"
   top: "conv2"
   param {
@@ -127,7 +127,7 @@ layer {
 }
 layer {
   name: "pool2"
-  type: "PoolingSK"
+  type: "Pooling"
   bottom: "conv2"
   top: "pool2"
   pooling_param {
@@ -139,7 +139,7 @@ layer {
 }
 layer {
   name: "conv3"
-  type: "ConvolutionSK"
+  type: "Convolution"
   bottom: "pool2"
   top: "conv3"
   param {
@@ -170,7 +170,7 @@ layer {
 }
 layer {
   name: "pool3"
-  type: "PoolingSK"
+  type: "Pooling"
   bottom: "conv3"
   top: "pool3"
   pooling_param {
@@ -182,7 +182,7 @@ layer {
 }
 layer {
   name: "ip1"
-  type: "ConvolutionSK"
+  type: "Convolution"
   bottom: "pool3"
   top: "ip1"
   param {
@@ -213,7 +213,7 @@ layer {
 }
 layer {
   name: "ip2"
-  type: "ConvolutionSK"
+  type: "Convolution"
   bottom: "ip1"
   top: "ip2"
   param {
@@ -244,7 +244,7 @@ layer {
 }
 layer {
   name: "ip3"
-  type: "ConvolutionSK"
+  type: "Convolution"
   bottom: "ip2"
   top: "ip3"
   param {

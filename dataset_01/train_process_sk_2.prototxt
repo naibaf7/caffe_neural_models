@@ -1,5 +1,5 @@
 train {
-  solverstate: "neuraltissue_sk_2out_iter_4000.solverstate"
+  #solverstate: "neuraltissue_sk_2out_iter_4000.solverstate"
   solver: "../net_sk_2out/neuraltissue_solver.prototxt"
   input {
     padding_size: 102
