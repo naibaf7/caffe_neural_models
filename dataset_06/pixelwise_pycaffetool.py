@@ -33,8 +33,7 @@ if config.library_compile:
         sys.exit(result)
     os.chdir(cwd)
 
-
-
+# Import pycaffe
 import caffe
 
 # General preparations
@@ -42,7 +41,7 @@ colorsr = np.random.rand(5000)
 colorsg = np.random.rand(5000)
 colorsb = np.random.rand(5000)
 
-dims = config.output_dims.dims
+dims = len(config.output_dims)
 
 def inspect_3D_hdf5(hdf5_file):
     print 'HDF5 keys: %s' % hdf5_file.keys()
@@ -79,25 +78,42 @@ def display_aff(aff_ds, index):
     img = Image.fromarray((sliceX & sliceY & sliceZ) * 255)
     img.show()
     
-def train_affinity(net, data_array, label_array, affinity_array):
+def slice_data(data, offsets, sizes):
+    if (len(offsets) == 1):
+        return data[offsets[0]:offsets[0] + sizes[0]]
+    if (len(offsets) == 2):
+        return data[offsets[0]:offsets[0] + sizes[0], offsets[1]:offsets[1] + sizes[1]]
+    if (len(offsets) == 3):
+        return data[offsets[0]:offsets[0] + sizes[0], offsets[1]:offsets[1] + sizes[1], offsets[2]:offsets[2] + sizes[2]]
+    if (len(offsets) == 4):
+        return data[offsets[0]:offsets[0] + sizes[0], offsets[1]:offsets[1] + sizes[1], offsets[2]:offsets[2] + sizes[2], offsets[3]:offsets[3] + sizes[3]]
+    
+def train_affinity(net, data_arrays, label_arrays, affinity_arrays):
+        
     # Loop from current iteration to last iteration
     for i in range(solver.iter, solver.max_iter):
         
+        # First pick the dataset to train with
+        dataset = randint(0, len(data_arrays)-1);
+        data_array = data_arrays[dataset];
+        label_array = label_arrays[dataset];
+        affinity_array = affinity_arrays[dataset];
+        
         offsets = []
-        for j in range(0, dims-1):
-            offsets.append(randint(math.ceil(config.input_padding[j]/float(2)), label_array.dims[j])) 
+        for j in range(0, dims):
+            offsets.append(randint(0, data_array.shape[j] - config.output_dims[j]))
         
         # Prefill data for training
-        data_slice = ;
-        data_dummy_slice = ;
-        label_slice = ;
-        label_dummy_slice = ;
-        aff_slice = ;
-        aff_dummy_slice = ;
+        data_slice = slice_data(data_array, offsets, [config.output_dims[di] + config.input_padding[di] for di in range(0, dims)]);
+        data_dummy_slice = [0];
+        label_slice = slice_data(label_array, [offsets[di] + int(math.ceil(config.input_padding[di] / float(2))) for di in range(0, dims)], config.output_dims);
+        label_dummy_slice = [0];
+        aff_slice = slice_data(affinity_array, [0] + [offsets[di] + int(math.ceil(config.input_padding[di] / float(2))) for di in range(0, dims)], [2] + config.output_dims);
+        aff_dummy_slice = [0];
         
-        net._set_input_arrays(0, data_slice, data_dummy_slice);
-        net._set_input_arrays(1, label_slice, label_dummy_slice);
-        net._set_input_arrays(2, aff_slice, aff_dummy_slice);
+        net._set_input_arrays(0, np.ascontiguousarray(data_slice[None, None, :]), data_dummy_slice);
+        net._set_input_arrays(1, np.ascontiguousarray(label_slice[None, None, :]), label_dummy_slice);
+        net._set_input_arrays(2, np.ascontiguousarray(aff_slice[None, :]), aff_dummy_slice);
         
         # Single step
         solver.step(1)
@@ -128,7 +144,12 @@ caffe.set_device(config.device_id)
 solver = caffe.get_solver(config.solver_proto)
 net = solver.net
 
-blob_data = net.layers['data']
+if(config.mode == "train"):
+    train_affinity(net, [hdf5_raw_ds], [hdf5_gt_ds], [hdf5_aff_ds])
+
+#if(config.mode == "process"):
+    
+
 
 
 
