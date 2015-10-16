@@ -6,9 +6,10 @@ import random
 import math
 import multiprocessing
 from PIL import Image
-
-import config
 from Crypto.Random.random import randint
+
+# Load the configuration file
+import config
 
 cmd_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]))
 if cmd_folder not in sys.path:
@@ -111,9 +112,13 @@ def train_affinity(net, data_arrays, label_arrays, affinity_arrays):
         aff_slice = slice_data(affinity_array, [0] + [offsets[di] + int(math.ceil(config.input_padding[di] / float(2))) for di in range(0, dims)], [2] + config.output_dims);
         aff_dummy_slice = [0];
         
-        net._set_input_arrays(0, np.ascontiguousarray(data_slice[None, None, :]), data_dummy_slice);
-        net._set_input_arrays(1, np.ascontiguousarray(label_slice[None, None, :]), label_dummy_slice);
-        net._set_input_arrays(2, np.ascontiguousarray(aff_slice[None, :]), aff_dummy_slice);
+        print (data_slice[None, None, :]).shape
+        print (label_slice[None, None, :]).shape
+        print (aff_slice[None, :]).shape
+        
+        net.set_input_arrays(0, np.ascontiguousarray(data_slice[None, None, :]), data_dummy_slice);
+        net.set_input_arrays(1, np.ascontiguousarray(label_slice[None, None, :]), label_dummy_slice);
+        net.set_input_arrays(2, np.ascontiguousarray(aff_slice[None, :]), aff_dummy_slice);
         
         # Single step
         solver.step(1)
