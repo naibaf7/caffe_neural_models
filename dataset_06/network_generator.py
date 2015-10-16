@@ -156,7 +156,7 @@ def caffenet(netmode):
         # Implement the loss
         if netconf.loss_function == 'affinity':
             net.prob = L.Softmax(last_blob, ntop=1)
-            net.loss = L.Affinity(net.prob, net.label, net.label_affinity, net.affinity_edges, ntop=0)
+            net.loss = L.MalisLoss(net.prob, net.label, net.label_affinity, net.affinity_edges, ntop=0)
         
         if netconf.loss_function == 'softmax':
             net.loss = L.SoftmaxWithLoss(last_blob, net.label)

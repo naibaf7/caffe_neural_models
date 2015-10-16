@@ -745,7 +745,7 @@ layer {
 }
 layer {
   name: "loss"
-  type: "Affinity"
+  type: "MalisLoss"
   bottom: "prob"
   bottom: "label"
   bottom: "label_affinity"
