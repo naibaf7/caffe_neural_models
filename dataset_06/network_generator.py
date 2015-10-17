@@ -213,8 +213,15 @@ def caffenet(netmode):
     if netmode == caffe_pb2.TEST:
         net.data, net.datai = data_layer([1,1,122,122,122])
         net.silence = L.Silence(net.datai, ntop=0)
-        last_blob = implement_usknet(net)
+        
+        run_shape_in = [[0,1,1,[1,1,1],[94,94,94]]]
+        run_shape_out = run_shape_in
+        
+        last_blob = implement_usknet(net, run_shape_out)
         net.prob = L.Softmax(last_blob, ntop=1)
+        
+        print(run_shape_out)
+        print("Max. memory requirements: %s B" % (run_shape_out[-1][0]+1*compute_memory(run_shape_out)))
     else:
         net.data, net.datai = data_layer([1,1,122,122,122])
         net.label, net.labeli = data_layer([1,1,32,32,32])
@@ -249,8 +256,10 @@ def caffenet(netmode):
     return net.to_proto()
 
 def make_net():
-    with open('net/net.prototxt', 'w') as f:
+    with open('net/net_train.prototxt', 'w') as f:
         print(caffenet(caffe_pb2.TRAIN), file=f)
+    with open('net/net_test.prototxt', 'w') as f:
+        print(caffenet(caffe_pb2.TEST), file=f)
 
 
 make_net()
