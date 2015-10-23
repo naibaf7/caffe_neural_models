@@ -69,7 +69,7 @@ def data_layer(shape):
 
 def conv_relu(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0], kstride=[1], group=1, weight_std=0.01):
     # The convolution buffer
-    conv_buff = run_shape[-1][2]
+    conv_buff = fsize * run_shape[-1][2]
     for i in range(0,len(run_shape[-1][4])):        
         conv_buff *= kernel_size[min(i,len(kernel_size)-1)]
         conv_buff *= run_shape[-1][4][i]
@@ -89,7 +89,7 @@ def conv_relu(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0
 
 def convolution(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0], kstride=[1], group=1, weight_std=0.01):
     # The convolution buffer
-    conv_buff = run_shape[-1][2]
+    conv_buff = fsize * run_shape[-1][2]
     for i in range(0,len(run_shape[-1][4])):        
         conv_buff *= kernel_size[min(i,len(kernel_size)-1)]
         conv_buff *= run_shape[-1][4][i]
@@ -132,7 +132,7 @@ def upconv(run_shape, bottom, num_output_dec, num_output_conv, weight_std=0.01):
                              param=dict(lr_mult=0, decay_mult=0))
 
     # The convolution buffer
-    conv_buff = run_shape[-1][2]
+    conv_buff = fsize * run_shape[-1][2]
     for i in range(0,len(run_shape[-1][4])):        
         conv_buff *= 2
         conv_buff *= run_shape[-1][4][i]
@@ -144,6 +144,7 @@ def upconv(run_shape, bottom, num_output_dec, num_output_conv, weight_std=0.01):
     update_shape(run_shape, update)
 
     conv = L.Convolution(deconv, num_output=num_output_conv, kernel_size=[1], stride=[1], pad=[0], kstride=[1], group=1,
+                            param=[dict(lr_mult=1),dict(lr_mult=2)],
                             weight_filler=dict(type='gaussian', std=weight_std),
                             bias_filler=dict(type='constant'))
     return deconv, conv
@@ -158,48 +159,54 @@ def mergecrop(run_shape, bottom_a, bottom_b):
 
     return L.Mergecrop(bottom_a, bottom_b)
 
-def implement_usknet(net, run_shape):
+def implement_usknet(net, run_shape, fmaps_start):
     # Chained blob list to construct the network (forward direction)
     blobs = []
 
     # All networks start with data
     blobs = blobs + [net.data]
+    
+    fmaps = fmaps_start
 
     if netconf.unet_depth > 0:
         # U-Net downsampling; 2*Convolution+Pooling
         for i in range(0, netconf.unet_depth):
-            conv, relu = conv_relu(run_shape, blobs[-1], 8, kernel_size=[3])
+            conv, relu = conv_relu(run_shape, blobs[-1], fmaps, kernel_size=[3], weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))))
             blobs = blobs + [relu]
-            conv, relu = conv_relu(run_shape, blobs[-1], 8, kernel_size=[3])
+            conv, relu = conv_relu(run_shape, blobs[-1], fmaps, kernel_size=[3], weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))))
             blobs = blobs + [relu]  # This is the blob of interest for mergecrop (index 2 + 3 * i)
             pool = max_pool(run_shape, blobs[-1])
             blobs = blobs + [pool]
+            fmaps = netconf.unet_fmap_inc_rule(fmaps)
+
     
     # If there is no SK-Net component, fill with 2 convolutions
     if (netconf.unet_depth > 0 and netconf.sknet_conv_depth == 0):
-        conv, relu = conv_relu(run_shape, blobs[-1], 8, kernel_size=[3])
+        conv, relu = conv_relu(run_shape, blobs[-1], fmaps, kernel_size=[3], weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))))
         blobs = blobs + [relu]
-        conv, relu = conv_relu(run_shape, blobs[-1], 8, kernel_size=[3])
+        conv, relu = conv_relu(run_shape, blobs[-1], fmaps, kernel_size=[3], weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))))
         blobs = blobs + [relu]
     # Else use the SK-Net instead
     else:
         for i in range(0, netconf.sknet_conv_depth):
+            # TODO: Not implemented yet (fixme)
             run_shape = run_shape
     
     if netconf.unet_depth > 0:
         # U-Net upsampling; Upconvolution+MergeCrop+2*Convolution
         for i in range(0, netconf.unet_depth):
-            deconv, conv = upconv(run_shape, blobs[-1], 8, 8);
+            deconv, conv = upconv(run_shape, blobs[-1], fmaps, netconf.unet_fmap_dec_rule(fmaps), weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))));
             blobs = blobs + [conv]
+            fmaps = netconf.unet_fmap_dec_rule(fmaps)
             # Here, layer (2 + 3 * i) with reversed i (high to low) is picked
             mergec = mergecrop(run_shape, blobs[-1], blobs[-1 + 3 * (netconf.unet_depth - i)])
             blobs = blobs + [mergec]
-            conv, relu = conv_relu(run_shape, blobs[-1], 8, kernel_size=[3])
+            conv, relu = conv_relu(run_shape, blobs[-1], fmaps, kernel_size=[3], weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))))
             blobs = blobs + [relu]
-            conv, relu = conv_relu(run_shape, blobs[-1], 8, kernel_size=[3])
+            conv, relu = conv_relu(run_shape, blobs[-1], fmaps, kernel_size=[3], weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))))
             blobs = blobs + [relu]
             
-        conv = convolution(run_shape, blobs[-1], 3, kernel_size=[1])
+        conv = convolution(run_shape, blobs[-1], 3, kernel_size=[1], weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))))
         blobs = blobs + [conv]
     
     # Return the last blob of the network (goes to error objective)
@@ -211,22 +218,24 @@ def caffenet(netmode):
     # Specify input data structures
     
     if netmode == caffe_pb2.TEST:
-        net.data, net.datai = data_layer([1,1,122,122,122])
+        net.data, net.datai = data_layer([1,1,126,126,126])
         net.silence = L.Silence(net.datai, ntop=0)
         
-        run_shape_in = [[0,1,1,[1,1,1],[94,94,94]]]
+        run_shape_in = [[0,1,1,[1,1,1],[126,126,126]]]
         run_shape_out = run_shape_in
         
-        last_blob = implement_usknet(net, run_shape_out)
+        last_blob = implement_usknet(net, run_shape_out, 16)
         net.prob = L.Softmax(last_blob, ntop=1)
         
-        print(run_shape_out)
+        for i in range(0,len(run_shape_out)):
+            print(run_shape_out[i])
         print("Max. memory requirements: %s B" % (run_shape_out[-1][0]+1*compute_memory(run_shape_out)))
+        print("Max. conv buffer: %s B" % (run_shape_out[-1][0]))
     else:
-        net.data, net.datai = data_layer([1,1,122,122,122])
-        net.label, net.labeli = data_layer([1,1,32,32,32])
+        net.data, net.datai = data_layer([1,1,126,126,126])
+        net.label, net.labeli = data_layer([1,1,36,36,36])
         if netconf.loss_function == 'affinity':
-            net.label_affinity, net.label_affinityi = data_layer([1,3,32,32,32])
+            net.label_affinity, net.label_affinityi = data_layer([1,3,36,36,36])
             net.affinity_edges, net.affinity_edgesi = data_layer([1,3,3])
             
         # Silence the inputs that are not useful
@@ -235,14 +244,16 @@ def caffenet(netmode):
         else:
             net.silence = L.Silence(net.datai, net.labeli, ntop=0)
     
-        run_shape_in = [[0,1,1,[1,1,1],[94,94,94]]]
+        run_shape_in = [[0,1,1,[1,1,1],[126,126,126]]]
         run_shape_out = run_shape_in
     
         # Start the actual network
-        last_blob = implement_usknet(net, run_shape_out)
+        last_blob = implement_usknet(net, run_shape_out, 16)
         
-        print(run_shape_out)
+        for i in range(0,len(run_shape_out)):
+            print(run_shape_out[i])
         print("Max. memory requirements: %s B" % (run_shape_out[-1][0]+2*compute_memory(run_shape_out)))
+        print("Max. conv buffer: %s B" % (run_shape_out[-1][0]))
         
         # Implement the loss
         if netconf.loss_function == 'affinity':

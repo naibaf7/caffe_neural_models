@@ -7,16 +7,16 @@ mem_global_limit = 10 * 1024 * 1024 * 1024
 mem_buf_limit = 4 * 1024 * 1024 * 1024
 
 # Desired number of output dimensions
-output_shape = [32, 32, 32]
+output_shape = [36, 36, 36]
 
 # Number of U-Net Pooling-Convolution downsampling/upsampling steps
 unet_depth = 3
 # Feature map increase rule (downsampling)
 def unet_fmap_inc_rule(fmaps):
-    return int(math.ceil(fmaps * 2));
+    return int(math.ceil(fmaps * 8));
 # Feature map decrease rule (upsampling)
 def unet_fmap_dec_rule(fmaps):
-    return int(math.ceil(fmaps / 2));
+    return int(math.ceil(fmaps / 8));
 
 
 # Number of SK-Net Pooling-Convolution steps

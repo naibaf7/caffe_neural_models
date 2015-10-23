@@ -37,6 +37,13 @@ if config.library_compile:
 # Import pycaffe
 import caffe
 
+# Fix up OpenCL variables. Can interfere with the
+# frame buffer if the GPU is also a display driver
+os.environ["GPU_MAX_ALLOC_PERCENT"] = "95"
+os.environ["GPU_SINGLE_ALLOC_PERCENT"] = "95"
+os.environ["GPU_MAX_HEAP_SIZE"] = "95"
+
+
 # General preparations
 colorsr = np.random.rand(5000)
 colorsg = np.random.rand(5000)
