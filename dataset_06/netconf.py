@@ -7,16 +7,16 @@ mem_global_limit = 10 * 1024 * 1024 * 1024
 mem_buf_limit = 4 * 1024 * 1024 * 1024
 
 # Desired number of output dimensions
-output_shape = [36, 36, 36]
+output_shape = [44, 44, 44]
 
 # Number of U-Net Pooling-Convolution downsampling/upsampling steps
 unet_depth = 3
 # Feature map increase rule (downsampling)
 def unet_fmap_inc_rule(fmaps):
-    return int(math.ceil(fmaps * 8));
+    return int(math.ceil(fmaps * 4));
 # Feature map decrease rule (upsampling)
 def unet_fmap_dec_rule(fmaps):
-    return int(math.ceil(fmaps / 8));
+    return int(math.ceil(fmaps / 4));
 
 
 # Number of SK-Net Pooling-Convolution steps
@@ -35,7 +35,5 @@ def sknet_fmap_dec_rule(fmaps):
 
 
 # Loss function and mode
-#loss_function: "affinity", "softmax"
-loss_function = "affinity"
-#affinity_mode: "indirect", "direct"
-affinity_mode = "direct"
+#loss_function: "malis", "softmax"
+loss_function = "softmax"

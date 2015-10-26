@@ -46,10 +46,22 @@ import netconf
 # Size of a float variable
 fsize = 4
 
-def compute_memory(shape_arr):
-    memory = 0;
+def compute_memory_weights(shape_arr):
+    memory = 0
     for i in range(0,len(shape_arr)):
-        mem = fsize * shape_arr[i][1] * shape_arr[i][2]
+        memory += shape_arr[i][1]
+    return memory
+        
+def compute_memory_buffers(shape_arr):
+    memory = 0
+    for i in range(0,len(shape_arr)):
+        memory = max(memory, shape_arr[i][0])
+    return memory
+        
+def compute_memory_blobs(shape_arr):
+    memory = 0
+    for i in range(0,len(shape_arr)):
+        mem = fsize * shape_arr[i][2]
         for j in range(0,len(shape_arr[i][4])):
             mem *= shape_arr[i][4][j]
         memory += mem
@@ -68,14 +80,16 @@ def data_layer(shape):
     return data, label
 
 def conv_relu(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0], kstride=[1], group=1, weight_std=0.01):
-    # The convolution buffer
+    # The convolution buffer and weight memory
+    weight_mem = fsize * num_output * run_shape[-1][2]
     conv_buff = fsize * run_shape[-1][2]
     for i in range(0,len(run_shape[-1][4])):        
         conv_buff *= kernel_size[min(i,len(kernel_size)-1)]
         conv_buff *= run_shape[-1][4][i]
+        weight_mem *= kernel_size[min(i,len(kernel_size)-1)]
     
     # Shape update rules
-    update =  [lambda x: max(x,conv_buff), lambda x: x, lambda x: num_output]
+    update =  [lambda x: conv_buff, lambda x: weight_mem, lambda x: num_output]
     update += [[lambda x: x, lambda x: x, lambda x: x]]
     update += [[lambda x: x - (kernel_size[min(i,len(kernel_size)-1)] - 1) * (run_shape[-1][3][i]) for i in range(0,len(run_shape[-1][4]))]]
     update_shape(run_shape, update)
@@ -88,14 +102,16 @@ def conv_relu(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0
     return conv, L.ReLU(conv, in_place=True)
 
 def convolution(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0], kstride=[1], group=1, weight_std=0.01):
-    # The convolution buffer
+    # The convolution buffer and weight memory
+    weight_mem = fsize * num_output * run_shape[-1][2]
     conv_buff = fsize * run_shape[-1][2]
     for i in range(0,len(run_shape[-1][4])):        
         conv_buff *= kernel_size[min(i,len(kernel_size)-1)]
         conv_buff *= run_shape[-1][4][i]
+        weight_mem *= kernel_size[min(i,len(kernel_size)-1)]
     
     # Shape update rules
-    update =  [lambda x: max(x,conv_buff), lambda x: x, lambda x: num_output]
+    update =  [lambda x: conv_buff, lambda x: weight_mem, lambda x: num_output]
     update += [[lambda x: x, lambda x: x, lambda x: x]]
     update += [[lambda x: x - (kernel_size[min(i,len(kernel_size)-1)] - 1) * (run_shape[-1][3][i]) for i in range(0,len(run_shape[-1][4]))]]
     update_shape(run_shape, update)
@@ -108,7 +124,7 @@ def convolution(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=
 
 def max_pool(run_shape, bottom, kernel_size=[2], stride=[2], pad=[0], kstride=[1]): 
     # Shape update rules
-    update =  [lambda x: x, lambda x: x, lambda x: x]
+    update =  [lambda x: 0, lambda x: 0, lambda x: x]
     update += [[lambda x: x * kstride[min(i,len(kstride)-1)] for i in range(0,len(run_shape[-1][4]))]]
     # Strictly speaking this update rule is not complete, but should be sufficient for USK
     if kstride[0] == 1 and kernel_size[0] == stride[0]:
@@ -122,7 +138,7 @@ def max_pool(run_shape, bottom, kernel_size=[2], stride=[2], pad=[0], kstride=[1
 def upconv(run_shape, bottom, num_output_dec, num_output_conv, weight_std=0.01):
     
     # Shape update rules
-    update =  [lambda x: x, lambda x: x, lambda x: num_output_dec]
+    update =  [lambda x: 0, lambda x: 0, lambda x: num_output_dec]
     update += [[lambda x: x, lambda x: x, lambda x: x]]
     update += [[lambda x: 2 * x for i in range(0,len(run_shape[-1][4]))]]
     update_shape(run_shape, update)
@@ -131,14 +147,15 @@ def upconv(run_shape, bottom, num_output_dec, num_output_conv, weight_std=0.01):
                                                             weight_filler=dict(type='constant', value=1), bias_term=False),
                              param=dict(lr_mult=0, decay_mult=0))
 
-    # The convolution buffer
+    # The convolution buffer and weight memory
+    weight_mem = fsize * num_output_conv * num_output_dec
     conv_buff = fsize * run_shape[-1][2]
     for i in range(0,len(run_shape[-1][4])):        
         conv_buff *= 2
         conv_buff *= run_shape[-1][4][i]
     
     # Shape update rules
-    update =  [lambda x: max(x,conv_buff), lambda x: x, lambda x: num_output_conv]
+    update =  [lambda x: conv_buff, lambda x: weight_mem, lambda x: num_output_conv]
     update += [[lambda x: x, lambda x: x, lambda x: x]]
     update += [[lambda x: x for i in range(0,len(run_shape[-1][4]))]]
     update_shape(run_shape, update)
@@ -152,12 +169,12 @@ def upconv(run_shape, bottom, num_output_dec, num_output_conv, weight_std=0.01):
 def mergecrop(run_shape, bottom_a, bottom_b):
 
     # Shape update rules
-    update =  [lambda x: x, lambda x: x, lambda x: 2*x]
+    update =  [lambda x: 0, lambda x: 0, lambda x: 2*x]
     update += [[lambda x: x, lambda x: x, lambda x: x]]
     update += [[lambda x: x for i in range(0,len(run_shape[-1][4]))]]
     update_shape(run_shape, update)
 
-    return L.Mergecrop(bottom_a, bottom_b)
+    return L.MergeCrop(bottom_a, bottom_b)
 
 def implement_usknet(net, run_shape, fmaps_start):
     # Chained blob list to construct the network (forward direction)
@@ -218,10 +235,16 @@ def caffenet(netmode):
     # Specify input data structures
     
     if netmode == caffe_pb2.TEST:
-        net.data, net.datai = data_layer([1,1,126,126,126])
+        net.data, net.datai = data_layer([1,1,132,132,132])
         net.silence = L.Silence(net.datai, ntop=0)
         
-        run_shape_in = [[0,1,1,[1,1,1],[126,126,126]]]
+        # Shape specs:
+        # 00.    Convolution buffer size
+        # 01.    Weight memory size
+        # 03.    Num. channels
+        # 04.    [d] parameter running value
+        # 05.    [w] parameter running value
+        run_shape_in = [[0,0,1,[1,1,1],[132,132,132]]]
         run_shape_out = run_shape_in
         
         last_blob = implement_usknet(net, run_shape_out, 16)
@@ -229,22 +252,26 @@ def caffenet(netmode):
         
         for i in range(0,len(run_shape_out)):
             print(run_shape_out[i])
-        print("Max. memory requirements: %s B" % (run_shape_out[-1][0]+1*compute_memory(run_shape_out)))
-        print("Max. conv buffer: %s B" % (run_shape_out[-1][0]))
-    else:
-        net.data, net.datai = data_layer([1,1,126,126,126])
-        net.label, net.labeli = data_layer([1,1,36,36,36])
-        if netconf.loss_function == 'affinity':
-            net.label_affinity, net.label_affinityi = data_layer([1,3,36,36,36])
-            net.affinity_edges, net.affinity_edgesi = data_layer([1,3,3])
             
-        # Silence the inputs that are not useful
-        if netconf.loss_function == 'affinity':
+        print("Max. memory requirements: %s B" % (compute_memory_buffers(run_shape_out)+compute_memory_weights(run_shape_out)+compute_memory_blobs(run_shape_out)))
+        print("Weight memory: %s B" % compute_memory_weights(run_shape_out))
+        print("Max. conv buffer: %s B" % compute_memory_buffers(run_shape_out))
+        
+    else:
+        if netconf.loss_function == 'malis':
+            net.data, net.datai = data_layer([1,1,132,132,132])
+            net.label, net.labeli = data_layer([1,1,44,44,44])
+            net.label_affinity, net.label_affinityi = data_layer([1,3,44,44,44])
+            net.affinity_edges, net.affinity_edgesi = data_layer([1,1,3,3])
             net.silence = L.Silence(net.datai, net.labeli, net.label_affinityi, net.affinity_edgesi, ntop=0)
-        else:
+            
+        if netconf.loss_function == 'softmax':
+            net.data, net.datai = data_layer([1,1,132,132,132])
+            net.label, net.labeli = data_layer([1,3,44,44,44])
             net.silence = L.Silence(net.datai, net.labeli, ntop=0)
+
     
-        run_shape_in = [[0,1,1,[1,1,1],[126,126,126]]]
+        run_shape_in = [[0,1,1,[1,1,1],[132,132,132]]]
         run_shape_out = run_shape_in
     
         # Start the actual network
@@ -252,16 +279,18 @@ def caffenet(netmode):
         
         for i in range(0,len(run_shape_out)):
             print(run_shape_out[i])
-        print("Max. memory requirements: %s B" % (run_shape_out[-1][0]+2*compute_memory(run_shape_out)))
-        print("Max. conv buffer: %s B" % (run_shape_out[-1][0]))
+            
+        print("Max. memory requirements: %s B" % (compute_memory_buffers(run_shape_out)+compute_memory_weights(run_shape_out)+2*compute_memory_blobs(run_shape_out)))
+        print("Weight memory: %s B" % compute_memory_weights(run_shape_out))
+        print("Max. conv buffer: %s B" % compute_memory_buffers(run_shape_out))
         
         # Implement the loss
-        if netconf.loss_function == 'affinity':
+        if netconf.loss_function == 'malis':
             net.prob = L.Softmax(last_blob, ntop=1)
             net.loss = L.MalisLoss(net.prob, net.label, net.label_affinity, net.affinity_edges, ntop=0)
         
         if netconf.loss_function == 'softmax':
-            net.loss = L.SoftmaxWithLoss(last_blob, net.label)
+            net.loss = L.SoftmaxWithLoss(last_blob, net.label, softmax_param=dict(axis=0), ntop=0)
     
     # Return the protocol buffer of the generated network
     return net.to_proto()
@@ -272,8 +301,21 @@ def make_net():
     with open('net/net_test.prototxt', 'w') as f:
         print(caffenet(caffe_pb2.TEST), file=f)
 
+def make_solver():
+    with open('net/solver.prototxt', 'w') as f:
+        print('train_net: \"net/net_train.prototxt\"', file=f)
+        print('base_lr: 0.00005', file=f)
+        print('momentum: 0.99', file=f)
+        print('weight_decay: 0.000005', file=f)
+        print('lr_policy: \"inv\"', file=f)
+        print('gamma: 0.0001', file=f)
+        print('power: 0.75', file=f)
+        print('max_iter: 100000', file=f)
+        print('snapshot: 2000', file=f)
+        print('snapshot_prefix: \"net_\"', file=f)
+        print('display: 50', file=f)
 
 make_net()
-
+make_solver()
 
 

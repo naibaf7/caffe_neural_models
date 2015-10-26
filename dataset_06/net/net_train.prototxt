@@ -6,9 +6,9 @@ layer {
   memory_data_param {
     dim: 1
     dim: 1
-    dim: 126
-    dim: 126
-    dim: 126
+    dim: 132
+    dim: 132
+    dim: 132
   }
 }
 layer {
@@ -18,34 +18,10 @@ layer {
   top: "labeli"
   memory_data_param {
     dim: 1
-    dim: 1
-    dim: 36
-    dim: 36
-    dim: 36
-  }
-}
-layer {
-  name: "label_affinity"
-  type: "MemoryData"
-  top: "label_affinity"
-  top: "label_affinityi"
-  memory_data_param {
-    dim: 1
     dim: 3
-    dim: 36
-    dim: 36
-    dim: 36
-  }
-}
-layer {
-  name: "affinity_edges"
-  type: "MemoryData"
-  top: "affinity_edges"
-  top: "affinity_edgesi"
-  memory_data_param {
-    dim: 1
-    dim: 3
-    dim: 3
+    dim: 44
+    dim: 44
+    dim: 44
   }
 }
 layer {
@@ -53,8 +29,6 @@ layer {
   type: "Silence"
   bottom: "datai"
   bottom: "labeli"
-  bottom: "label_affinityi"
-  bottom: "affinity_edgesi"
 }
 layer {
   name: "Convolution1"
@@ -147,7 +121,7 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 128
+    num_output: 64
     pad: 0
     kernel_size: 3
     group: 1
@@ -180,14 +154,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 128
+    num_output: 64
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0240562612162
+      std: 0.034020690872
     }
     bias_filler {
       type: "constant"
@@ -226,14 +200,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 1024
+    num_output: 256
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0240562612162
+      std: 0.034020690872
     }
     bias_filler {
       type: "constant"
@@ -259,14 +233,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 1024
+    num_output: 256
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.008505172718
+      std: 0.017010345436
     }
     bias_filler {
       type: "constant"
@@ -305,14 +279,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 8192
+    num_output: 1024
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.008505172718
+      std: 0.017010345436
     }
     bias_filler {
       type: "constant"
@@ -338,14 +312,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 8192
+    num_output: 1024
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.00300703265203
+      std: 0.008505172718
     }
     bias_filler {
       type: "constant"
@@ -369,11 +343,11 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 8192
+    num_output: 1024
     bias_term: false
     pad: 0
     kernel_size: 2
-    group: 8192
+    group: 1024
     stride: 2
     weight_filler {
       type: "constant"
@@ -394,14 +368,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 1024
+    num_output: 256
     pad: 0
     kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.00300703265203
+      std: 0.008505172718
     }
     bias_filler {
       type: "constant"
@@ -410,16 +384,16 @@ layer {
   }
 }
 layer {
-  name: "Mergecrop1"
-  type: "Mergecrop"
+  name: "MergeCrop1"
+  type: "MergeCrop"
   bottom: "Convolution9"
   bottom: "Convolution6"
-  top: "Mergecrop1"
+  top: "MergeCrop1"
 }
 layer {
   name: "Convolution10"
   type: "Convolution"
-  bottom: "Mergecrop1"
+  bottom: "MergeCrop1"
   top: "Convolution10"
   param {
     lr_mult: 1
@@ -428,14 +402,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 1024
+    num_output: 256
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.00601406530406
+      std: 0.0120281306081
     }
     bias_filler {
       type: "constant"
@@ -461,14 +435,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 1024
+    num_output: 256
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.008505172718
+      std: 0.017010345436
     }
     bias_filler {
       type: "constant"
@@ -492,11 +466,11 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 1024
+    num_output: 256
     bias_term: false
     pad: 0
     kernel_size: 2
-    group: 1024
+    group: 256
     stride: 2
     weight_filler {
       type: "constant"
@@ -517,14 +491,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 128
+    num_output: 64
     pad: 0
     kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.008505172718
+      std: 0.017010345436
     }
     bias_filler {
       type: "constant"
@@ -533,16 +507,16 @@ layer {
   }
 }
 layer {
-  name: "Mergecrop2"
-  type: "Mergecrop"
+  name: "MergeCrop2"
+  type: "MergeCrop"
   bottom: "Convolution12"
   bottom: "Convolution4"
-  top: "Mergecrop2"
+  top: "MergeCrop2"
 }
 layer {
   name: "Convolution13"
   type: "Convolution"
-  bottom: "Mergecrop2"
+  bottom: "MergeCrop2"
   top: "Convolution13"
   param {
     lr_mult: 1
@@ -551,14 +525,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 128
+    num_output: 64
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.017010345436
+      std: 0.0240562612162
     }
     bias_filler {
       type: "constant"
@@ -584,14 +558,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 128
+    num_output: 64
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0240562612162
+      std: 0.034020690872
     }
     bias_filler {
       type: "constant"
@@ -615,11 +589,11 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 128
+    num_output: 64
     bias_term: false
     pad: 0
     kernel_size: 2
-    group: 128
+    group: 64
     stride: 2
     weight_filler {
       type: "constant"
@@ -647,7 +621,7 @@ layer {
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0240562612162
+      std: 0.034020690872
     }
     bias_filler {
       type: "constant"
@@ -656,16 +630,16 @@ layer {
   }
 }
 layer {
-  name: "Mergecrop3"
-  type: "Mergecrop"
+  name: "MergeCrop3"
+  type: "MergeCrop"
   bottom: "Convolution15"
   bottom: "Convolution2"
-  top: "Mergecrop3"
+  top: "MergeCrop3"
 }
 layer {
   name: "Convolution16"
   type: "Convolution"
-  bottom: "Mergecrop3"
+  bottom: "MergeCrop3"
   top: "Convolution16"
   param {
     lr_mult: 1
@@ -756,17 +730,13 @@ layer {
   }
 }
 layer {
-  name: "prob"
-  type: "Softmax"
-  bottom: "Convolution18"
-  top: "prob"
-}
-layer {
   name: "loss"
-  type: "MalisLoss"
-  bottom: "prob"
+  type: "SoftmaxWithLoss"
+  bottom: "Convolution18"
   bottom: "label"
-  bottom: "label_affinity"
-  bottom: "affinity_edges"
+  top: "loss"
+  softmax_param {
+    axis: 1
+  }
 }
 
