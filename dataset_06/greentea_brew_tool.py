@@ -62,6 +62,15 @@ def normalize(dataset, newmin=-1, newmax=1):
         minval = minval.min(0)
     return ((dataset - minval) / (maxval - minval)) * (newmax - newmin) + newmin
 
+def error_scale(data, factor_low, factor_high):
+    scale = np.add((data >= 0.5) * factor_high, (data < 0.5) * factor_low)
+    return scale
+
+def count_affinity(dataset):
+    aff_high = np.sum(dataset >= 0.5)
+    aff_low = np.sum(dataset < 0.5)
+    return aff_high, aff_low;
+
 
 def inspect_2D_hdf5(hdf5_file):
     print 'HDF5 keys: %s' % hdf5_file.keys()
@@ -117,9 +126,12 @@ def slice_data(data, offsets, sizes):
     if (len(offsets) == 4):
         return data[offsets[0]:offsets[0] + sizes[0], offsets[1]:offsets[1] + sizes[1], offsets[2]:offsets[2] + sizes[2], offsets[3]:offsets[3] + sizes[3]]
     
-def train(solver, data_arrays, label_arrays, affinity_arrays, mode='softmax'):
+def train(solver, data_arrays, label_arrays, affinity_arrays, mode='euclid'):
     plt.ion()
     plt.show()
+
+    c1, c0 = count_affinity(hdf5_aff_ds)
+    print "High/low: %s" % [c1,c0]
 
     losses = []
     
@@ -138,21 +150,20 @@ def train(solver, data_arrays, label_arrays, affinity_arrays, mode='softmax'):
         for j in range(0, dims):
             offsets.append(randint(0, data_array.shape[j] - (config.output_dims[j] + config.input_padding[j])))
         
+        dummy_slice = [0]
+        
+        
         # These are the raw data elements
         data_slice = slice_data(data_array, offsets, [config.output_dims[di] + config.input_padding[di] for di in range(0, dims)])
-        data_dummy_slice = [0]
         
         # These are the labels (connected components)
         label_slice = slice_data(label_array, [offsets[di] + int(math.ceil(config.input_padding[di] / float(2))) for di in range(0, dims)], config.output_dims)
-        label_dummy_slice = [0]
         
         # These are the affinity edge values
-        aff_slice = slice_data(affinity_array, [0] + [offsets[di] + int(math.ceil(config.input_padding[di] / float(2))) for di in range(0, dims)], [len(config.output_dims)] + config.output_dims)
-        aff_dummy_slice = [0]
+        aff_slice = slice_data(affinity_array, [0] + [offsets[di] + int(math.ceil(config.input_padding[di] / float(2))) for di in range(0, dims)], [len(config.output_dims)] + config.output_dims)        
         
         # These are the affinity edges
         edge_slice = np.asarray([[[[-1, 0, 0], [0, -1, 0], [0, 0, -1]]]])
-        edge_dummy_slice = [0]
         
         print (data_slice[None, None, :]).shape
         print (label_slice[None, None, :]).shape
@@ -160,15 +171,16 @@ def train(solver, data_arrays, label_arrays, affinity_arrays, mode='softmax'):
         print (edge_slice).shape
         
         if mode == 'malis':
-            net.set_input_arrays(0, np.ascontiguousarray(data_slice[None, None, :]).astype(float32), np.ascontiguousarray(data_dummy_slice).astype(float32))
-            net.set_input_arrays(1, np.ascontiguousarray(label_slice[None, None, :]).astype(float32), np.ascontiguousarray(label_dummy_slice).astype(float32))
-            net.set_input_arrays(2, np.ascontiguousarray(aff_slice[None, :]).astype(float32), np.ascontiguousarray(aff_dummy_slice).astype(float32))
-            net.set_input_arrays(3, np.ascontiguousarray(edge_slice).astype(float32), np.ascontiguousarray(edge_dummy_slice).astype(float32))
+            net.set_input_arrays(0, np.ascontiguousarray(data_slice[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
+            net.set_input_arrays(1, np.ascontiguousarray(label_slice[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
+            net.set_input_arrays(2, np.ascontiguousarray(aff_slice[None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
+            net.set_input_arrays(3, np.ascontiguousarray(edge_slice).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
             
         # We pass the raw and affinity array only
-        if mode == 'softmax':
-            net.set_input_arrays(0, np.ascontiguousarray(data_slice[None, None, :]).astype(float32), np.ascontiguousarray(data_dummy_slice).astype(float32))
-            net.set_input_arrays(1, np.ascontiguousarray(aff_slice[None, :]).astype(float32), np.ascontiguousarray(aff_dummy_slice).astype(float32))
+        if mode == 'euclid':
+            net.set_input_arrays(0, np.ascontiguousarray(data_slice[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
+            net.set_input_arrays(1, np.ascontiguousarray(aff_slice[None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
+            net.set_input_arrays(2, np.ascontiguousarray(error_scale(aff_slice[None, :],1.0,0.045)).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
 
         
         # Single step
@@ -204,6 +216,7 @@ caffe.set_mode_gpu()
 caffe.set_device(config.device_id)
 solver = caffe.get_solver(config.solver_proto)
 net = solver.net
+
 
 if(config.mode == "train"):
     train(solver, [normalize(hdf5_raw_ds)], [hdf5_gt_ds], [hdf5_aff_ds])

@@ -25,10 +25,24 @@ layer {
   }
 }
 layer {
+  name: "scale"
+  type: "MemoryData"
+  top: "scale"
+  top: "scalei"
+  memory_data_param {
+    dim: 1
+    dim: 3
+    dim: 44
+    dim: 44
+    dim: 44
+  }
+}
+layer {
   name: "silence"
   type: "Silence"
   bottom: "datai"
   bottom: "labeli"
+  bottom: "scalei"
 }
 layer {
   name: "Convolution1"
@@ -731,12 +745,9 @@ layer {
 }
 layer {
   name: "loss"
-  type: "SoftmaxWithLoss"
+  type: "EuclideanLoss"
   bottom: "Convolution18"
   bottom: "label"
-  top: "loss"
-  softmax_param {
-    axis: 1
-  }
+  bottom: "scale"
 }
 

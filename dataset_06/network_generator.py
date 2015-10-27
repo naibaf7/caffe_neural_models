@@ -265,10 +265,11 @@ def caffenet(netmode):
             net.affinity_edges, net.affinity_edgesi = data_layer([1,1,3,3])
             net.silence = L.Silence(net.datai, net.labeli, net.label_affinityi, net.affinity_edgesi, ntop=0)
             
-        if netconf.loss_function == 'softmax':
+        if netconf.loss_function == 'euclid':
             net.data, net.datai = data_layer([1,1,132,132,132])
             net.label, net.labeli = data_layer([1,3,44,44,44])
-            net.silence = L.Silence(net.datai, net.labeli, ntop=0)
+            net.scale, net.scalei = data_layer([1,3,44,44,44])
+            net.silence = L.Silence(net.datai, net.labeli, net.scalei, ntop=0)
 
     
         run_shape_in = [[0,1,1,[1,1,1],[132,132,132]]]
@@ -286,11 +287,10 @@ def caffenet(netmode):
         
         # Implement the loss
         if netconf.loss_function == 'malis':
-            net.prob = L.Softmax(last_blob, ntop=1)
-            net.loss = L.MalisLoss(net.prob, net.label, net.label_affinity, net.affinity_edges, ntop=0)
+            net.loss = L.MalisLoss(last_blob, net.label, net.label_affinity, net.affinity_edges, ntop=0)
         
-        if netconf.loss_function == 'softmax':
-            net.loss = L.SoftmaxWithLoss(last_blob, net.label, softmax_param=dict(axis=0), ntop=0)
+        if netconf.loss_function == 'euclid':
+            net.loss = L.EuclideanLoss(last_blob, net.label, net.scale, ntop=0)
     
     # Return the protocol buffer of the generated network
     return net.to_proto()
