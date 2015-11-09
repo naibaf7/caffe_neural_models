@@ -28,7 +28,7 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 16
+    num_output: 24
     pad: 0
     kernel_size: 3
     group: 1
@@ -61,14 +61,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 16
+    num_output: 24
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.068041381744
+      std: 0.0555555555556
     }
     bias_filler {
       type: "constant"
@@ -107,14 +107,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 64
+    num_output: 96
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.068041381744
+      std: 0.0555555555556
     }
     bias_filler {
       type: "constant"
@@ -140,14 +140,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 64
+    num_output: 96
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.034020690872
+      std: 0.0277777777778
     }
     bias_filler {
       type: "constant"
@@ -186,14 +186,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 256
+    num_output: 384
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.034020690872
+      std: 0.0277777777778
     }
     bias_filler {
       type: "constant"
@@ -219,14 +219,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 256
+    num_output: 384
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.017010345436
+      std: 0.0138888888889
     }
     bias_filler {
       type: "constant"
@@ -265,14 +265,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 1024
+    num_output: 1536
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.017010345436
+      std: 0.0138888888889
     }
     bias_filler {
       type: "constant"
@@ -298,14 +298,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 1024
+    num_output: 1536
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.008505172718
+      std: 0.00694444444444
     }
     bias_filler {
       type: "constant"
@@ -329,11 +329,11 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 1024
+    num_output: 1536
     bias_term: false
     pad: 0
     kernel_size: 2
-    group: 1024
+    group: 1536
     stride: 2
     weight_filler {
       type: "constant"
@@ -354,14 +354,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 256
+    num_output: 384
     pad: 0
     kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.008505172718
+      std: 0.00694444444444
     }
     bias_filler {
       type: "constant"
@@ -388,14 +388,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 256
+    num_output: 384
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0120281306081
+      std: 0.00982092751648
     }
     bias_filler {
       type: "constant"
@@ -421,14 +421,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 256
+    num_output: 384
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.017010345436
+      std: 0.0138888888889
     }
     bias_filler {
       type: "constant"
@@ -452,11 +452,11 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 256
+    num_output: 384
     bias_term: false
     pad: 0
     kernel_size: 2
-    group: 256
+    group: 384
     stride: 2
     weight_filler {
       type: "constant"
@@ -477,14 +477,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 64
+    num_output: 96
     pad: 0
     kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.017010345436
+      std: 0.0138888888889
     }
     bias_filler {
       type: "constant"
@@ -511,14 +511,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 64
+    num_output: 96
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0240562612162
+      std: 0.019641855033
     }
     bias_filler {
       type: "constant"
@@ -544,14 +544,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 64
+    num_output: 96
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.034020690872
+      std: 0.0277777777778
     }
     bias_filler {
       type: "constant"
@@ -575,11 +575,11 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 64
+    num_output: 96
     bias_term: false
     pad: 0
     kernel_size: 2
-    group: 64
+    group: 96
     stride: 2
     weight_filler {
       type: "constant"
@@ -600,14 +600,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 16
+    num_output: 24
     pad: 0
     kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.034020690872
+      std: 0.0277777777778
     }
     bias_filler {
       type: "constant"
@@ -634,14 +634,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 16
+    num_output: 24
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0481125224325
+      std: 0.0392837100659
     }
     bias_filler {
       type: "constant"
@@ -667,14 +667,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 16
+    num_output: 24
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.068041381744
+      std: 0.0555555555556
     }
     bias_filler {
       type: "constant"
@@ -707,7 +707,7 @@ layer {
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.068041381744
+      std: 0.0555555555556
     }
     bias_filler {
       type: "constant"
@@ -717,7 +717,7 @@ layer {
 }
 layer {
   name: "prob"
-  type: "Softmax"
+  type: "Sigmoid"
   bottom: "Convolution18"
   top: "prob"
 }

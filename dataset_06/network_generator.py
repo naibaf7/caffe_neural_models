@@ -176,7 +176,7 @@ def mergecrop(run_shape, bottom_a, bottom_b):
 
     return L.MergeCrop(bottom_a, bottom_b)
 
-def implement_usknet(net, run_shape, fmaps_start):
+def implement_usknet(net, run_shape, fmaps_start, fmaps_end):
     # Chained blob list to construct the network (forward direction)
     blobs = []
 
@@ -212,7 +212,7 @@ def implement_usknet(net, run_shape, fmaps_start):
     if netconf.unet_depth > 0:
         # U-Net upsampling; Upconvolution+MergeCrop+2*Convolution
         for i in range(0, netconf.unet_depth):
-            deconv, conv = upconv(run_shape, blobs[-1], fmaps, netconf.unet_fmap_dec_rule(fmaps), weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))));
+            deconv, conv = upconv(run_shape, blobs[-1], fmaps, netconf.unet_fmap_dec_rule(fmaps), weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))))
             blobs = blobs + [conv]
             fmaps = netconf.unet_fmap_dec_rule(fmaps)
             # Here, layer (2 + 3 * i) with reversed i (high to low) is picked
@@ -223,7 +223,7 @@ def implement_usknet(net, run_shape, fmaps_start):
             conv, relu = conv_relu(run_shape, blobs[-1], fmaps, kernel_size=[3], weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))))
             blobs = blobs + [relu]
             
-        conv = convolution(run_shape, blobs[-1], 3, kernel_size=[1], weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))))
+        conv = convolution(run_shape, blobs[-1], fmaps_end, kernel_size=[1], weight_std=math.sqrt(2.0/float(run_shape[-1][2]*pow(3,len(run_shape[-1][4])))))
         blobs = blobs + [conv]
     
     # Return the last blob of the network (goes to error objective)
@@ -235,6 +235,15 @@ def caffenet(netmode):
     # Specify input data structures
     
     if netmode == caffe_pb2.TEST:
+        if netconf.loss_function == 'malis':
+            fmaps_end = 3
+            
+        if netconf.loss_function == 'euclid':
+            fmaps_end = 3
+
+        if netconf.loss_function == 'softmax':
+            fmaps_end = 2
+
         net.data, net.datai = data_layer([1,1,132,132,132])
         net.silence = L.Silence(net.datai, ntop=0)
         
@@ -247,9 +256,18 @@ def caffenet(netmode):
         run_shape_in = [[0,0,1,[1,1,1],[132,132,132]]]
         run_shape_out = run_shape_in
         
-        last_blob = implement_usknet(net, run_shape_out, 16)
-        net.prob = L.Softmax(last_blob, ntop=1)
+        last_blob = implement_usknet(net, run_shape_out, 24, fmaps_end)
+
+        # Implement the prediction layer
+        if netconf.loss_function == 'malis':
+            net.prob = L.Sigmoid(last_blob, ntop=1)
         
+        if netconf.loss_function == 'euclid':
+            net.prob = L.Sigmoid(last_blob, ntop=1)
+            
+        if netconf.loss_function == 'softmax':
+            net.prob = L.Softmax(last_blob, ntop=1)
+
         for i in range(0,len(run_shape_out)):
             print(run_shape_out[i])
             
@@ -264,19 +282,27 @@ def caffenet(netmode):
             net.label_affinity, net.label_affinityi = data_layer([1,3,44,44,44])
             net.affinity_edges, net.affinity_edgesi = data_layer([1,1,3,3])
             net.silence = L.Silence(net.datai, net.labeli, net.label_affinityi, net.affinity_edgesi, ntop=0)
+            fmaps_end = 3
             
         if netconf.loss_function == 'euclid':
             net.data, net.datai = data_layer([1,1,132,132,132])
             net.label, net.labeli = data_layer([1,3,44,44,44])
             net.scale, net.scalei = data_layer([1,3,44,44,44])
             net.silence = L.Silence(net.datai, net.labeli, net.scalei, ntop=0)
+            fmaps_end = 3
 
+        if netconf.loss_function == 'softmax':
+            net.data, net.datai = data_layer([1,1,132,132,132])
+            # Currently only supports binary classification
+            net.label, net.labeli = data_layer([1,1,44,44,44])
+            net.silence = L.Silence(net.datai, net.labeli, ntop=0)
+            fmaps_end = 2
     
         run_shape_in = [[0,1,1,[1,1,1],[132,132,132]]]
         run_shape_out = run_shape_in
     
         # Start the actual network
-        last_blob = implement_usknet(net, run_shape_out, 16)
+        last_blob = implement_usknet(net, run_shape_out, 24, fmaps_end)
         
         for i in range(0,len(run_shape_out)):
             print(run_shape_out[i])
@@ -286,12 +312,17 @@ def caffenet(netmode):
         print("Max. conv buffer: %s B" % compute_memory_buffers(run_shape_out))
         
         # Implement the loss
-        if netconf.loss_function == 'malis':
-            net.loss = L.MalisLoss(last_blob, net.label, net.label_affinity, net.affinity_edges, ntop=0)
+        if netconf.loss_function == 'malis':       
+            last_blob = L.Sigmoid(last_blob, in_place=True)
+            net.loss = L.MalisLoss(last_blob, net.label_affinity, net.label, net.affinity_edges, ntop=0)
         
         if netconf.loss_function == 'euclid':
+            last_blob = L.Sigmoid(last_blob, in_place=True)
             net.loss = L.EuclideanLoss(last_blob, net.label, net.scale, ntop=0)
-    
+            
+        if netconf.loss_function == 'softmax':
+            net.loss = L.SoftmaxWithLoss(last_blob, net.label, ntop=0)
+            
     # Return the protocol buffer of the generated network
     return net.to_proto()
 
