@@ -5,6 +5,7 @@ import random
 import math
 import multiprocessing
 from Crypto.Random.random import randint
+import malis as m
 
 # Visualization
 import matplotlib
@@ -225,7 +226,7 @@ def process(net, data_arrays, output_folder):
         outhdf5.close()
                 
         
-def train(solver, data_arrays, label_arrays, affinity_arrays, mode='euclid'):
+def train(solver, data_arrays, label_arrays, mode='euclid'):
     # plt.ion()
     # plt.show()
 
@@ -235,6 +236,14 @@ def train(solver, data_arrays, label_arrays, affinity_arrays, mode='euclid'):
     losses = []
     
     net = solver.net
+    if mode == 'malis':
+        nhood = m.mknhood3d()
+    if mode == 'euclid':
+        nhood = m.mknhood3d()
+    if mode == 'malis_aniso':
+        nhood = m.mknhood3d_aniso()
+    if mode == 'euclid_aniso':
+        nhood = m.mknhood3d_aniso()
     
     # Loop from current iteration to last iteration
     for i in range(solver.iter, solver.max_iter):
@@ -243,7 +252,7 @@ def train(solver, data_arrays, label_arrays, affinity_arrays, mode='euclid'):
         dataset = randint(0, len(data_arrays) - 1)
         data_array = data_arrays[dataset]
         label_array = label_arrays[dataset]
-        affinity_array = affinity_arrays[dataset]
+        # affinity_array = affinity_arrays[dataset]
         
         offsets = []
         for j in range(0, dims):
@@ -258,21 +267,20 @@ def train(solver, data_arrays, label_arrays, affinity_arrays, mode='euclid'):
         label_slice = slice_data(label_array, [offsets[di] + int(math.ceil(config.input_padding[di] / float(2))) for di in range(0, dims)], config.output_dims)
         
         # These are the affinity edge values
-        aff_slice = slice_data(affinity_array, [0] + [offsets[di] + int(math.ceil(config.input_padding[di] / float(2))) for di in range(0, dims)], [len(config.output_dims)] + config.output_dims)        
-        
-        # These are the affinity edges
-        edge_slice = np.asarray([[[[-1, 0, 0], [0, -1, 0], [0, 0, -1]]]])
-        
+        # Also recomputing the corresponding labels (connected components)
+        aff_slice = m.seg_to_affgraph(label_slice,nhood)
+        label_slice,ccSizes = m.connected_components_affgraph(aff_slice,nhood)
+
         print (data_slice[None, None, :]).shape
         print (label_slice[None, None, :]).shape
         print (aff_slice[None, :]).shape
-        print (edge_slice).shape
+        print (nhood).shape
         
         if mode == 'malis':
             net.set_input_arrays(0, np.ascontiguousarray(data_slice[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
             net.set_input_arrays(1, np.ascontiguousarray(label_slice[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
             net.set_input_arrays(2, np.ascontiguousarray(aff_slice[None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
-            net.set_input_arrays(3, np.ascontiguousarray(edge_slice).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
+            net.set_input_arrays(3, np.ascontiguousarray(nhood).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
             
         # We pass the raw and affinity array only
         if mode == 'euclid':
@@ -297,8 +305,8 @@ def train(solver, data_arrays, label_arrays, affinity_arrays, mode='euclid'):
         
 
 hdf5_raw_file = 'fibsem_medulla_7col/tstvol-520-1-h5/img_normalized.h5'
-hdf5_gt_file = 'fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_seg.h5'
-hdf5_aff_file = 'fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_aff.h5'
+hdf5_gt_file = 'fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_seg_thick.h5'
+# hdf5_aff_file = 'fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_aff.h5'
 
 #hdf5_raw_file = 'zebrafish_friedrich/raw.hdf5'
 #hdf5_gt_file = 'zebrafish_friedrich/labels_2.hdf5'
@@ -306,7 +314,7 @@ hdf5_aff_file = 'fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_aff.h5'
 
 hdf5_raw = h5py.File(hdf5_raw_file, 'r')
 hdf5_gt = h5py.File(hdf5_gt_file, 'r')
-hdf5_aff = h5py.File(hdf5_aff_file, 'r')
+# hdf5_aff = h5py.File(hdf5_aff_file, 'r')
 
 #inspect_3D_hdf5(hdf5_raw)
 #inspect_3D_hdf5(hdf5_gt)
@@ -315,7 +323,7 @@ hdf5_aff = h5py.File(hdf5_aff_file, 'r')
 # Make the dataset ready for the network
 hdf5_raw_ds =normalize(np.asarray(hdf5_raw[hdf5_raw.keys()[0]]).astype(float32), -1, 1)
 hdf5_gt_ds = np.asarray(hdf5_gt[hdf5_gt.keys()[0]]).astype(float32)
-hdf5_aff_ds = np.asarray(hdf5_aff[hdf5_aff.keys()[0]])
+# hdf5_aff_ds = np.asarray(hdf5_aff[hdf5_aff.keys()[0]])
 
 #display_aff(hdf5_aff_ds, 1)
 #display_con(hdf5_gt_ds, 0)
@@ -330,7 +338,7 @@ caffe.set_device(config.device_id)
 if(config.mode == "train"):
     solver = caffe.get_solver(config.solver_proto)
     net = solver.net
-    train(solver, [normalize(hdf5_raw_ds)], [hdf5_gt_ds], [hdf5_aff_ds])
+    train(solver, [normalize(hdf5_raw_ds)], [hdf5_gt_ds])
     
 if(config.mode == "process"):
     net = caffe.Net(config.test_net, config.trained_model, caffe.TEST)
