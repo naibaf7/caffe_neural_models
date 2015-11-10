@@ -21,4 +21,4 @@ input_padding = [88, 88, 88]
 border_reflect = False
 
 # Select "train" or "process"
-mode = "process"
+mode = "train"

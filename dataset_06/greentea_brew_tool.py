@@ -4,6 +4,7 @@ import numpy as np
 import random
 import math
 import multiprocessing
+from Crypto.Random.random import randint
 
 # Visualization
 import matplotlib
@@ -192,21 +193,24 @@ def process(net, data_arrays, output_folder):
             net.set_input_arrays(0, np.ascontiguousarray(data_slice[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
             net.forward()
             output = dst.data[0].copy()
-            print output.shape
-
-            # m = volume_slicer.VolumeSlicer(data=np.squeeze(output[0,:,:]))
-            # m.configure_traits()
+            print offsets
+            
+            # while(True):
+            #    blob = raw_input('Blob:')
+            #    fmap = int(raw_input('Enter the feature map:'))
+            #    m = volume_slicer.VolumeSlicer(data=np.squeeze(net.blobs[blob].data[0])[fmap,:,:])
+            #    m.configure_traits()
             
             set_slice_data(pred_array, output, [0] + offsets, [3] + config.output_dims)
             
             incremented = False
             for d in range(0, dims):
-                if (offsets[dims - 1 - d] == out_dims[dims - 1 - d] - (config.output_dims[dims - 1 - d] + config.input_padding[dims - 1 - d])):
+                if (offsets[dims - 1 - d] == out_dims[dims - 1 - d] - config.output_dims[dims - 1 - d]):
                     # Reset direction
                     offsets[dims - 1 - d] = 0
                 else:
                     # Increment direction
-                    offsets[dims - 1 - d] = min(offsets[dims - 1 - d] + config.output_dims[dims - 1 - d], out_dims[dims - 1 - d] - (config.output_dims[dims - 1 - d] + config.input_padding[dims - 1 - d]))
+                    offsets[dims - 1 - d] = min(offsets[dims - 1 - d] + config.output_dims[dims - 1 - d], out_dims[dims - 1 - d] - config.output_dims[dims - 1 - d])
                     incremented = True
                     break
             
@@ -221,7 +225,7 @@ def process(net, data_arrays, output_folder):
         outhdf5.close()
                 
         
-def train(solver, data_arrays, label_arrays, affinity_arrays, mode='malis'):
+def train(solver, data_arrays, label_arrays, affinity_arrays, mode='euclid'):
     # plt.ion()
     # plt.show()
 
@@ -301,17 +305,17 @@ hdf5_aff_file = 'fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_aff.h5'
 
 
 hdf5_raw = h5py.File(hdf5_raw_file, 'r')
-#hdf5_gt = h5py.File(hdf5_gt_file, 'r')
-#hdf5_aff = h5py.File(hdf5_aff_file, 'r')
+hdf5_gt = h5py.File(hdf5_gt_file, 'r')
+hdf5_aff = h5py.File(hdf5_aff_file, 'r')
 
-inspect_3D_hdf5(hdf5_raw)
+#inspect_3D_hdf5(hdf5_raw)
 #inspect_3D_hdf5(hdf5_gt)
 #inspect_4D_hdf5(hdf5_aff)
 
 # Make the dataset ready for the network
 hdf5_raw_ds =normalize(np.asarray(hdf5_raw[hdf5_raw.keys()[0]]).astype(float32), -1, 1)
-#hdf5_gt_ds = np.asarray(hdf5_gt[hdf5_gt.keys()[0]]).astype(float32)
-#hdf5_aff_ds = np.asarray(hdf5_aff[hdf5_aff.keys()[0]])
+hdf5_gt_ds = np.asarray(hdf5_gt[hdf5_gt.keys()[0]]).astype(float32)
+hdf5_aff_ds = np.asarray(hdf5_aff[hdf5_aff.keys()[0]])
 
 #display_aff(hdf5_aff_ds, 1)
 #display_con(hdf5_gt_ds, 0)

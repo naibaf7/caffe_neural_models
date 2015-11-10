@@ -48,6 +48,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution1"
   top: "Convolution1"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Convolution2"
@@ -81,6 +84,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution2"
   top: "Convolution2"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Pooling1"
@@ -127,6 +133,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution3"
   top: "Convolution3"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Convolution4"
@@ -160,6 +169,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution4"
   top: "Convolution4"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Pooling2"
@@ -206,6 +218,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution5"
   top: "Convolution5"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Convolution6"
@@ -239,6 +254,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution6"
   top: "Convolution6"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Pooling3"
@@ -285,6 +303,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution7"
   top: "Convolution7"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Convolution8"
@@ -318,6 +339,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution8"
   top: "Convolution8"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Deconvolution1"
@@ -375,6 +399,12 @@ layer {
   bottom: "Convolution9"
   bottom: "Convolution6"
   top: "MergeCrop1"
+  mergecrop_param {
+    forward: true
+    forward: true
+    backward: true
+    backward: true
+  }
 }
 layer {
   name: "Convolution10"
@@ -408,6 +438,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution10"
   top: "Convolution10"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Convolution11"
@@ -441,6 +474,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution11"
   top: "Convolution11"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Deconvolution2"
@@ -498,6 +534,12 @@ layer {
   bottom: "Convolution12"
   bottom: "Convolution4"
   top: "MergeCrop2"
+  mergecrop_param {
+    forward: true
+    forward: true
+    backward: true
+    backward: true
+  }
 }
 layer {
   name: "Convolution13"
@@ -531,6 +573,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution13"
   top: "Convolution13"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Convolution14"
@@ -564,6 +609,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution14"
   top: "Convolution14"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Deconvolution3"
@@ -621,6 +669,12 @@ layer {
   bottom: "Convolution15"
   bottom: "Convolution2"
   top: "MergeCrop3"
+  mergecrop_param {
+    forward: true
+    forward: true
+    backward: true
+    backward: true
+  }
 }
 layer {
   name: "Convolution16"
@@ -654,6 +708,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution16"
   top: "Convolution16"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Convolution17"
@@ -687,6 +744,9 @@ layer {
   type: "ReLU"
   bottom: "Convolution17"
   top: "Convolution17"
+  relu_param {
+    negative_slope: 0.005
+  }
 }
 layer {
   name: "Convolution18"

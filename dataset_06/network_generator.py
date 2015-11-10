@@ -99,7 +99,7 @@ def conv_relu(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0
                                 param=[dict(lr_mult=1),dict(lr_mult=2)],
                                 weight_filler=dict(type='gaussian', std=weight_std),
                                 bias_filler=dict(type='constant'))
-    return conv, L.ReLU(conv, in_place=True)
+    return conv, L.ReLU(conv, in_place=True, negative_slope=0.005)
 
 def convolution(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0], kstride=[1], group=1, weight_std=0.01):
     # The convolution buffer and weight memory
@@ -174,7 +174,7 @@ def mergecrop(run_shape, bottom_a, bottom_b):
     update += [[lambda x: x for i in range(0,len(run_shape[-1][4]))]]
     update_shape(run_shape, update)
 
-    return L.MergeCrop(bottom_a, bottom_b)
+    return L.MergeCrop(bottom_a, bottom_b, forward=[1,1], backward=[1,1])
 
 def implement_usknet(net, run_shape, fmaps_start, fmaps_end):
     # Chained blob list to construct the network (forward direction)

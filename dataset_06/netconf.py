@@ -36,4 +36,4 @@ def sknet_fmap_dec_rule(fmaps):
 
 # Loss function and mode
 #loss_function: "malis", "euclid", "softmax"
-loss_function = "malis"
+loss_function = "euclid"
