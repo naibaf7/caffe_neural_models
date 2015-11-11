@@ -335,7 +335,7 @@ def make_net():
 def make_solver():
     with open('net/solver.prototxt', 'w') as f:
         print('train_net: \"net/net_train.prototxt\"', file=f)
-        print('base_lr: 0.00005', file=f)
+        print('base_lr: 0.00001', file=f)
         print('momentum: 0.99', file=f)
         print('weight_decay: 0.000005', file=f)
         print('lr_policy: \"inv\"', file=f)

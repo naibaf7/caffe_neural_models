@@ -5,7 +5,9 @@ import random
 import math
 import multiprocessing
 from Crypto.Random.random import randint
-import malis as m
+import malis as malis
+import gc
+import resource
 
 # Visualization
 import matplotlib
@@ -226,24 +228,18 @@ def process(net, data_arrays, output_folder):
         outhdf5.close()
                 
         
-def train(solver, data_arrays, label_arrays, mode='euclid'):
-    # plt.ion()
-    # plt.show()
-
-    # c1, c0 = count_affinity([affinity_arrays])
-    # print "High/low: %s" % [c1,c0]
-
+def train(solver, data_arrays, label_arrays, mode='malis'):
     losses = []
     
     net = solver.net
     if mode == 'malis':
-        nhood = m.mknhood3d()
+        nhood = malis.mknhood3d()
     if mode == 'euclid':
-        nhood = m.mknhood3d()
+        nhood = malis.mknhood3d()
     if mode == 'malis_aniso':
-        nhood = m.mknhood3d_aniso()
+        nhood = malis.mknhood3d_aniso()
     if mode == 'euclid_aniso':
-        nhood = m.mknhood3d_aniso()
+        nhood = malis.mknhood3d_aniso()
     
     # Loop from current iteration to last iteration
     for i in range(solver.iter, solver.max_iter):
@@ -268,8 +264,8 @@ def train(solver, data_arrays, label_arrays, mode='euclid'):
         
         # These are the affinity edge values
         # Also recomputing the corresponding labels (connected components)
-        aff_slice = m.seg_to_affgraph(label_slice,nhood)
-        label_slice,ccSizes = m.connected_components_affgraph(aff_slice,nhood)
+        aff_slice = malis.seg_to_affgraph(label_slice,nhood)
+        label_slice,ccSizes = malis.connected_components_affgraph(aff_slice,nhood)
 
         print (data_slice[None, None, :]).shape
         print (label_slice[None, None, :]).shape
@@ -280,7 +276,7 @@ def train(solver, data_arrays, label_arrays, mode='euclid'):
             net.set_input_arrays(0, np.ascontiguousarray(data_slice[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
             net.set_input_arrays(1, np.ascontiguousarray(label_slice[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
             net.set_input_arrays(2, np.ascontiguousarray(aff_slice[None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
-            net.set_input_arrays(3, np.ascontiguousarray(nhood).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
+            net.set_input_arrays(3, np.ascontiguousarray(nhood[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
             
         # We pass the raw and affinity array only
         if mode == 'euclid':
@@ -295,13 +291,20 @@ def train(solver, data_arrays, label_arrays, mode='euclid'):
         # Single step
         loss = solver.step(1)
 
+        # Memory clean up and report
+        print("Memory usage (before GC): %d MiB" % ((resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * resource.getpagesize()) / 1024*1024))
+        
+        while gc.collect():
+            pass
+
+        print("Memory usage (after GC): %d MiB" % ((resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * resource.getpagesize()) / 1024*1024))
+
+
         # m = volume_slicer.VolumeSlicer(data=np.squeeze((net.blobs['Convolution18'].data[0])[0,:,:]))
         # m.configure_traits()
 
         print("Loss: %s" % loss)
         losses += [loss]
-        # plt.scatter(range(0, len(losses)), losses)
-        # plt.draw()
         
 
 hdf5_raw_file = 'fibsem_medulla_7col/tstvol-520-1-h5/img_normalized.h5'
@@ -337,6 +340,7 @@ caffe.set_device(config.device_id)
 
 if(config.mode == "train"):
     solver = caffe.get_solver(config.solver_proto)
+    solver.restore("net__iter_8000.solverstate")
     net = solver.net
     train(solver, [normalize(hdf5_raw_ds)], [hdf5_gt_ds])
     
