@@ -292,12 +292,12 @@ def train(solver, data_arrays, label_arrays, mode='malis'):
         loss = solver.step(1)
 
         # Memory clean up and report
-        print("Memory usage (before GC): %d MiB" % ((resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * resource.getpagesize()) / 1024*1024))
+        print("Memory usage (before GC): %d MiB" % ((resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * resource.getpagesize()) / (1024*1024)))
         
         while gc.collect():
             pass
 
-        print("Memory usage (after GC): %d MiB" % ((resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * resource.getpagesize()) / 1024*1024))
+        print("Memory usage (after GC): %d MiB" % ((resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * resource.getpagesize()) / (1024*1024)))
 
 
         # m = volume_slicer.VolumeSlicer(data=np.squeeze((net.blobs['Convolution18'].data[0])[0,:,:]))
