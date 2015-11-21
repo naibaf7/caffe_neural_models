@@ -246,7 +246,7 @@ def caffenet(netmode):
         if netconf.loss_function == 'softmax':
             fmaps_end = 2
 
-        net.data, net.datai = data_layer([1,1,44,132,132])
+        net.data, net.datai = data_layer([1,1,572,572])
         net.silence = L.Silence(net.datai, ntop=0)
         
         # Shape specs:
@@ -255,7 +255,7 @@ def caffenet(netmode):
         # 03.    Num. channels
         # 04.    [d] parameter running value
         # 05.    [w] parameter running value
-        run_shape_in = [[0,0,1,[1,1,1],[44,132,132]]]
+        run_shape_in = [[0,0,1,[1,1],[572,572]]]
         run_shape_out = run_shape_in
         
         last_blob = implement_usknet(net, run_shape_out, 64, fmaps_end)
@@ -279,28 +279,28 @@ def caffenet(netmode):
         
     else:
         if netconf.loss_function == 'malis':
-            net.data, net.datai = data_layer([1,1,44,132,132])
-            net.label, net.labeli = data_layer([1,1,16,44,44])
-            net.label_affinity, net.label_affinityi = data_layer([1,11,16,44,44])
+            net.data, net.datai = data_layer([1,1,572,572])
+            net.label, net.labeli = data_layer([1,1,388,388])
+            net.label_affinity, net.label_affinityi = data_layer([1,11,16,388,388])
             net.affinity_edges, net.affinity_edgesi = data_layer([1,1,11,3])
             net.silence = L.Silence(net.datai, net.labeli, net.label_affinityi, net.affinity_edgesi, ntop=0)
             fmaps_end = 11
             
         if netconf.loss_function == 'euclid':
-            net.data, net.datai = data_layer([1,1,44,132,132])
-            net.label, net.labeli = data_layer([1,11,16,44,44])
-            net.scale, net.scalei = data_layer([1,11,16,44,44])
+            net.data, net.datai = data_layer([1,1,572,572])
+            net.label, net.labeli = data_layer([1,3,388,388])
+            net.scale, net.scalei = data_layer([1,3,388,388])
             net.silence = L.Silence(net.datai, net.labeli, net.scalei, ntop=0)
             fmaps_end = 11
 
         if netconf.loss_function == 'softmax':
-            net.data, net.datai = data_layer([1,1,44,132,132])
+            net.data, net.datai = data_layer([1,1,572,572])
             # Currently only supports binary classification
-            net.label, net.labeli = data_layer([1,1,16,44,44])
+            net.label, net.labeli = data_layer([1,1,388,388])
             net.silence = L.Silence(net.datai, net.labeli, ntop=0)
             fmaps_end = 2
     
-        run_shape_in = [[0,1,1,[1,1,1],[44,132,132]]]
+        run_shape_in = [[0,1,1,[1,1],[572,338]]]
         run_shape_out = run_shape_in
     
         # Start the actual network
@@ -345,7 +345,7 @@ def make_solver():
         print('power: 0.75', file=f)
         print('max_iter: 100000', file=f)
         print('snapshot: 2000', file=f)
-        print('snapshot_prefix: \"net_\"', file=f)
+        print('snapshot_prefix: \"net\"', file=f)
         print('display: 50', file=f)
 
 make_net()

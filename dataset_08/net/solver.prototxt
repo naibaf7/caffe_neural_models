@@ -7,5 +7,5 @@ gamma: 0.0001
 power: 0.75
 max_iter: 100000
 snapshot: 2000
-snapshot_prefix: "net_"
+snapshot_prefix: "net"
 display: 50

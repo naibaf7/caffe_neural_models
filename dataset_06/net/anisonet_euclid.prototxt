@@ -12,9 +12,37 @@ layer {
   }
 }
 layer {
+  name: "label"
+  type: "MemoryData"
+  top: "label"
+  top: "labeli"
+  memory_data_param {
+    dim: 1
+    dim: 11
+    dim: 16
+    dim: 44
+    dim: 44
+  }
+}
+layer {
+  name: "scale"
+  type: "MemoryData"
+  top: "scale"
+  top: "scalei"
+  memory_data_param {
+    dim: 1
+    dim: 11
+    dim: 16
+    dim: 44
+    dim: 44
+  }
+}
+layer {
   name: "silence"
   type: "Silence"
   bottom: "datai"
+  bottom: "labeli"
+  bottom: "scalei"
 }
 layer {
   name: "Convolution1"
@@ -800,9 +828,16 @@ layer {
   }
 }
 layer {
-  name: "prob"
+  name: "Sigmoid1"
   type: "Sigmoid"
   bottom: "Convolution18"
-  top: "prob"
+  top: "Convolution18"
+}
+layer {
+  name: "loss"
+  type: "EuclideanLoss"
+  bottom: "Convolution18"
+  bottom: "label"
+  bottom: "scale"
 }
 

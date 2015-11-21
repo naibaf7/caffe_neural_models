@@ -12,9 +12,50 @@ layer {
   }
 }
 layer {
+  name: "label"
+  type: "MemoryData"
+  top: "label"
+  top: "labeli"
+  memory_data_param {
+    dim: 1
+    dim: 1
+    dim: 16
+    dim: 44
+    dim: 44
+  }
+}
+layer {
+  name: "label_affinity"
+  type: "MemoryData"
+  top: "label_affinity"
+  top: "label_affinityi"
+  memory_data_param {
+    dim: 1
+    dim: 11
+    dim: 16
+    dim: 44
+    dim: 44
+  }
+}
+layer {
+  name: "affinity_edges"
+  type: "MemoryData"
+  top: "affinity_edges"
+  top: "affinity_edgesi"
+  memory_data_param {
+    dim: 1
+    dim: 1
+    dim: 11
+    dim: 3
+  }
+}
+layer {
   name: "silence"
   type: "Silence"
   bottom: "datai"
+  bottom: "labeli"
+  bottom: "label_affinityi"
+  bottom: "affinity_edgesi"
 }
 layer {
   name: "Convolution1"
@@ -800,9 +841,17 @@ layer {
   }
 }
 layer {
-  name: "prob"
+  name: "Sigmoid1"
   type: "Sigmoid"
   bottom: "Convolution18"
-  top: "prob"
+  top: "Convolution18"
+}
+layer {
+  name: "loss"
+  type: "MalisLoss"
+  bottom: "Convolution18"
+  bottom: "label_affinity"
+  bottom: "label"
+  bottom: "affinity_edges"
 }
 

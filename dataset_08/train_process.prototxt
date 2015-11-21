@@ -1,0 +1,66 @@
+train {
+  # solverstate: "net_iter_10000.solverstate"
+  solver: "net/solver.prototxt"
+  input {
+    padding_size: 184
+    patch_size: 388
+    channels: 3
+    labels: 2
+    batch_size: 1
+    raw_images: "train/raw"
+    label_images: "train/labels"
+    preprocessor {
+      normalization: true
+      rotation: true
+      mirror: true
+      clahe {
+        clip: 4.0
+      }
+      crop {
+        imagecrop: 0
+        labelcrop: 0
+      }
+      blur {
+        mean: 0.0
+        std: 0.1
+        ksize: 5
+      }
+      histeq {
+        patch_prior: false
+        masking: false
+      }
+    }
+  }
+}
+
+process {
+  process_net: "net/net_test.prototxt"
+  caffemodel: "net_iter_10000.caffemodel"
+  input {
+    padding_size: 184
+    patch_size: 388
+    channels: 3
+    labels: 2
+    batch_size: 1
+    raw_images: "validate_raw"
+    preprocessor {
+      normalization: true
+      clahe {
+        clip: 4.0
+      }
+      crop {
+        imagecrop: 0
+        labelcrop: 0
+      }
+    }
+  }
+  filter_output {
+    output_filters: false
+    output: "u_filters"
+  }
+  output {
+    format: "tif"
+    fp32_out: true
+    output: "validate_output"
+  }
+}
