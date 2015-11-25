@@ -27,7 +27,7 @@ train {
       }
       histeq {
         patch_prior: false
-        masking: false
+        masking: true
       }
     }
   }

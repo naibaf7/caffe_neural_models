@@ -19,7 +19,7 @@ from PIL import Image
 
 # Load the configuration file
 import config
-from numpy import float32, int32, uint8
+from numpy import float32, int32, uint8, dtype
 
 cmd_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]))
 if cmd_folder not in sys.path:
@@ -240,6 +240,14 @@ def train(solver, data_arrays, label_arrays, mode='malis'):
         nhood = malis.mknhood3d_aniso()
     if mode == 'euclid_aniso':
         nhood = malis.mknhood3d_aniso()
+        
+    data_slice_cont = np.zeros((1,1,132,132,132), dtype=float32)
+    label_slice_cont  = np.zeros((1,1,44,44,44), dtype=float32)
+    aff_slice_cont = np.zeros((1,3,44,44,44), dtype=float32)
+    nhood_cont = np.zeros((1,1,3,3), dtype=float32)
+    error_scale_cont = np.zeros((1,1,44,44,44), dtype=float32)
+    
+    dummy_slice = np.ascontiguousarray([0]).astype(float32)
     
     # Loop from current iteration to last iteration
     for i in range(solver.iter, solver.max_iter):
@@ -254,7 +262,6 @@ def train(solver, data_arrays, label_arrays, mode='malis'):
         for j in range(0, dims):
             offsets.append(randint(0, data_array.shape[j] - (config.output_dims[j] + config.input_padding[j])))
         
-        dummy_slice = [0]
         
         # These are the raw data elements
         data_slice = slice_data(data_array, offsets, [config.output_dims[di] + config.input_padding[di] for di in range(0, dims)])
@@ -273,10 +280,15 @@ def train(solver, data_arrays, label_arrays, mode='malis'):
         print (nhood).shape
         
         if mode == 'malis':
-            net.set_input_arrays(0, np.ascontiguousarray(data_slice[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
-            net.set_input_arrays(1, np.ascontiguousarray(label_slice[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
-            net.set_input_arrays(2, np.ascontiguousarray(aff_slice[None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
-            net.set_input_arrays(3, np.ascontiguousarray(nhood[None, None, :]).astype(float32), np.ascontiguousarray(dummy_slice).astype(float32))
+            np.copyto(data_slice_cont, np.ascontiguousarray(data_slice[None, None, :]).astype(float32))
+            np.copyto(label_slice_cont, np.ascontiguousarray(label_slice[None, None, :]).astype(float32))
+            np.copyto(aff_slice_cont, np.ascontiguousarray(aff_slice[None, :]).astype(float32))
+            np.copyto(nhood_cont, np.ascontiguousarray(nhood[None, None, :]).astype(float32))
+            
+            net.set_input_arrays(0, data_slice_cont, dummy_slice)
+            net.set_input_arrays(1, label_slice_cont, dummy_slice)
+            net.set_input_arrays(2, aff_slice_cont, dummy_slice)
+            net.set_input_arrays(3, nhood_cont, dummy_slice)
             
         # We pass the raw and affinity array only
         if mode == 'euclid':

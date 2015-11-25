@@ -1,5 +1,5 @@
 train_net: "net/net_train.prototxt"
-base_lr: 0.00001
+base_lr: 0.0005
 momentum: 0.99
 weight_decay: 0.000005
 lr_policy: "inv"
