@@ -1,4 +1,4 @@
-train_net: "net/net_train.prototxt"
+train_net: "net/net_train_malis.prototxt"
 base_lr: 0.0005
 momentum: 0.99
 weight_decay: 0.000005

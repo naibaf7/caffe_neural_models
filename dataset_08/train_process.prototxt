@@ -1,5 +1,5 @@
 train {
-  # solverstate: "net_iter_10000.solverstate"
+  solverstate: "net_iter_22000.solverstate"
   solver: "net/solver.prototxt"
   input {
     padding_size: 184
@@ -27,15 +27,19 @@ train {
       }
       histeq {
         patch_prior: false
-        masking: true
+        masking: false
       }
     }
+  }
+  filter_output {
+    output_filters: false
+    output: "u_filters"
   }
 }
 
 process {
   process_net: "net/net_test.prototxt"
-  caffemodel: "net_iter_10000.caffemodel"
+  caffemodel: "net_iter_22000.caffemodel"
   input {
     padding_size: 184
     patch_size: 388
