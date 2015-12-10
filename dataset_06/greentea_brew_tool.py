@@ -47,6 +47,9 @@ if config.library_compile:
 # Import pycaffe
 import caffe
 
+# Import visualization and display
+import visualizer
+
 # Fix up OpenCL variables. Can interfere with the
 # frame buffer if the GPU is also a display driver
 os.environ["GPU_MAX_ALLOC_PERCENT"] = "100"
@@ -55,10 +58,6 @@ os.environ["GPU_MAX_HEAP_SIZE"] = "100"
 os.environ["GPU_FORCE_64BIT_PTR"] = "1"
 
 
-# General preparations
-colorsr = np.random.rand(5000)
-colorsg = np.random.rand(5000)
-colorsb = np.random.rand(5000)
 
 dims = len(config.output_dims)
 
@@ -336,7 +335,7 @@ hdf5_gt = h5py.File(hdf5_gt_file, 'r')
 #inspect_4D_hdf5(hdf5_aff)
 
 # Make the dataset ready for the network
-hdf5_raw_ds =normalize(np.asarray(hdf5_raw[hdf5_raw.keys()[0]]).astype(float32), -1, 1)
+hdf5_raw_ds = normalize(np.asarray(hdf5_raw[hdf5_raw.keys()[0]]).astype(float32), -1, 1)
 hdf5_gt_ds = np.asarray(hdf5_gt[hdf5_gt.keys()[0]]).astype(float32)
 # hdf5_aff_ds = np.asarray(hdf5_aff[hdf5_aff.keys()[0]])
 
@@ -356,7 +355,7 @@ if(config.mode == "train"):
     net = solver.net
     train(solver, [normalize(hdf5_raw_ds)], [hdf5_gt_ds])
     
-if(config.mode == "process"):
+if(config.mode == "process"):data
     net = caffe.Net(config.test_net, config.trained_model, caffe.TEST)
     process(net, [normalize(hdf5_raw_ds)], config.output_folder)
 
