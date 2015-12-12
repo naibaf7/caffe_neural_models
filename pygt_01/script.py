@@ -64,6 +64,8 @@ class TrainOptions:
     loss_output_file = "log/loss.log"
     test_output_file = "log/test.log"
     test_interval = 2
+    scale_error = True
+    training_method = "affinity"
 
 
 netconf = NetConf()
@@ -73,7 +75,7 @@ train_net_conf, test_net_conf = pygt.netgen.create_nets(netconf)
 
 # pygt.caffe.enumerate_devices(False)
 
-train_device = 1
+train_device = 2
 test_device = 2
 
 with open('net_train.prototxt', 'w') as f:
@@ -108,8 +110,16 @@ hdf5_gt = h5py.File(hdf5_gt_file, 'r')
 hdf5_raw_ds =pygt.normalize(np.asarray(hdf5_raw[hdf5_raw.keys()[0]]).astype(float32), -1, 1)
 hdf5_gt_ds = np.asarray(hdf5_gt[hdf5_gt.keys()[0]]).astype(float32)
 
-datasets = {}
-datasets['data'] = [hdf5_raw_ds]
-datasets['label'] = [hdf5_gt_ds]
+dataset = {}
+dataset['data'] = hdf5_raw_ds[None, :]
+dataset['components'] = hdf5_gt_ds[None, :]
+dataset['nhood'] = pygt.malis.mknhood3d()
 
-pygt.train(solver, test_net, datasets, options)
+test_dataset = {}
+test_dataset['data'] = hdf5_raw_ds
+test_dataset['label'] = hdf5_gt_ds
+
+
+pygt.train(solver, test_net, [dataset], [test_dataset], options)
+
+
