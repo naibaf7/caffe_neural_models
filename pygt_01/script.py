@@ -63,10 +63,12 @@ class TrainOptions:
     loss_function = "euclid"
     loss_output_file = "log/loss.log"
     test_output_file = "log/test.log"
-    test_interval = 2
+    test_interval = 40
     scale_error = True
     training_method = "affinity"
-
+    train_device = 0
+    test_device = 3
+    test_net='net_test.prototxt'
 
 netconf = NetConf()
 options = TrainOptions()
@@ -75,8 +77,7 @@ train_net_conf, test_net_conf = pygt.netgen.create_nets(netconf)
 
 # pygt.caffe.enumerate_devices(False)
 
-train_device = 2
-test_device = 2
+pygt.caffe.set_devices((options.train_device, options.test_device))
 
 with open('net_train.prototxt', 'w') as f:
     print(train_net_conf, file=f)
@@ -98,7 +99,7 @@ solver_config.snapshot = 2000
 solver_config.snapshot_prefix = 'net'
 solver_config.display = 1
 
-solver, test_net = pygt.init_solver(solver_config, test_net='net_test.prototxt', train_device=train_device, test_device=test_device)
+solver, test_net = pygt.init_solver(solver_config, options)
 
 # solver.restore('net_iter_8000.solverstate')
 
