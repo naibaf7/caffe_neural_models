@@ -5,7 +5,6 @@ import random
 import math
 import multiprocessing
 from Crypto.Random.random import randint
-import malis as malis
 import gc
 import resource
 
@@ -31,6 +30,12 @@ if cmd_subfolder not in sys.path:
 
 sys.path.append(config.caffe_path + "/python")
 
+cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile(inspect.currentframe()))[0], "../../malis")))
+if cmd_subfolder not in sys.path:
+    sys.path.append(cmd_subfolder)
+
+
+
 # Ensure correct compilation of Caffe and Pycaffe
 if config.library_compile:
     cpus = multiprocessing.cpu_count()
@@ -46,9 +51,10 @@ if config.library_compile:
 
 # Import pycaffe
 import caffe
+import malis as malis
 
 # Import visualization and display
-import visualizer
+# import visualizer
 
 # Fix up OpenCL variables. Can interfere with the
 # frame buffer if the GPU is also a display driver
@@ -319,7 +325,7 @@ def train(solver, data_arrays, label_arrays, mode='malis'):
         
 
 hdf5_raw_file = 'fibsem_medulla_7col/tstvol-520-1-h5/img_normalized.h5'
-hdf5_gt_file = 'fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_seg_thick.h5'
+hdf5_gt_file = 'fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_seg.h5'
 # hdf5_aff_file = 'fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_aff.h5'
 
 #hdf5_raw_file = 'zebrafish_friedrich/raw.hdf5'
@@ -350,12 +356,12 @@ caffe.set_device(config.device_id)
 
 
 if(config.mode == "train"):
-    solver = caffe.get_solver(config.solver_proto)
-    solver.restore("net__iter_8000.solverstate")
+    solver = caffe.get_solver_from_file(config.solver_proto)
+    #solver.restore("net__iter_8000.solverstate")
     net = solver.net
     train(solver, [normalize(hdf5_raw_ds)], [hdf5_gt_ds])
     
-if(config.mode == "process"):data
+if(config.mode == "process"):
     net = caffe.Net(config.test_net, config.trained_model, caffe.TEST)
     process(net, [normalize(hdf5_raw_ds)], config.output_folder)
 

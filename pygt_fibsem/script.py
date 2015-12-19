@@ -24,17 +24,17 @@ class NetConf:
     # 4 GB single buffer memory limit
     mem_buf_limit = 4 * 1024 * 1024 * 1024
     # Desired input dimensions (will select closest possible)
-    input_shape = [44,132,132]
+    input_shape = [132,132,132]
     # Desired output dimensions (will select closest posisble)
-    output_shape = [16, 44, 44]
+    output_shape = [44, 44, 44]
     # Number of U-Net Pooling-Convolution downsampling/upsampling steps
     unet_depth = 3
     # Number of feature maps in the start
-    fmap_start = 64
+    fmap_start = 16
     # Number of input feature maps
     fmap_input = 1
     # Number of ouput feature maps
-    fmap_output = 11
+    fmap_output = 3
     # Feature map increase rule (downsampling)
     def unet_fmap_inc_rule(self, fmaps):
         return int(math.ceil(fmaps * 3));
@@ -42,7 +42,7 @@ class NetConf:
     def unet_fmap_dec_rule(self, fmaps):
         return int(math.ceil(fmaps / 3));
     # Skewed U-Net downsampling strategy
-    unet_downsampling_strategy = [[1,2,2],[1,2,2],[1,2,2]]
+    unet_downsampling_strategy = [[2,2,2],[2,2,2],[2,2,2]]
     # Number of SK-Net Pooling-Convolution steps
     sknet_conv_depth = 0
     # Feature map increase rule
@@ -74,26 +74,23 @@ with open('net_test.prototxt', 'w') as f:
     print(test_net_conf, file=f)
 
 # Load the datasets
-hdf5_raw_file = '/groups/turaga/home/turagas/data/SNEMI3D/train/raw.hdf5'
-hdf5_gt_file = '/groups/turaga/home/turagas/data/SNEMI3D/train/labels_id.hdf5'
-hdf5_aff_file = '/groups/turaga/home/turagas/data/SNEMI3D/train/labels_aff11.hdf5'
+hdf5_raw_file = '../dataset_06/fibsem_medulla_7col/tstvol-520-1-h5/img_normalized.h5'
+hdf5_gt_file = '../dataset_06/fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_seg.h5'
 
 hdf5_raw = h5py.File(hdf5_raw_file, 'r')
 hdf5_gt = h5py.File(hdf5_gt_file, 'r')
-hdf5_aff = h5py.File(hdf5_aff_file, 'r')
-hdf5_raw_ds =pygt.normalize(np.asarray(hdf5_raw[hdf5_raw.keys()[0]]).astype(float32), -1, 1)
+
+hdf5_raw_ds = pygt.normalize(np.asarray(hdf5_raw[hdf5_raw.keys()[0]]).astype(float32), -1, 1)
 hdf5_gt_ds = np.asarray(hdf5_gt[hdf5_gt.keys()[0]]).astype(float32)
-hdf5_aff_ds = np.asarray(hdf5_aff[hdf5_aff.keys()[0]]).astype(float32)
 
 dataset = {}
 dataset['data'] = hdf5_raw_ds[None, :]
-dataset['label'] = hdf5_aff_ds;
 dataset['components'] = hdf5_gt_ds[None, :]
-dataset['nhood'] = pygt.malis.mknhood3d_aniso()
+dataset['nhood'] = pygt.malis.mknhood3d()
 
-test_dataset = {}
-test_dataset['data'] = hdf5_raw_ds
-test_dataset['label'] = hdf5_aff_ds
+#test_dataset = {}
+#test_dataset['data'] = hdf5_raw_ds
+#test_dataset['label'] = hdf5_aff_ds
 
 
 # Set train options
@@ -105,9 +102,9 @@ class TrainOptions:
     scale_error = True
     training_method = "affinity"
     recompute_affinity = True
-    train_device = 0
-    test_device = 2
-    test_net='net_test.prototxt'
+    train_device = 3
+    test_device = 3
+    test_net=None #'net_test.prototxt'
 
 
 options = TrainOptions()
@@ -128,7 +125,7 @@ solver_config.display = 1
 
 # Set devices
 # pygt.caffe.enumerate_devices(False)
-pygt.caffe.set_devices((options.train_device, options.test_device))
+pygt.caffe.set_devices((options.train_device,))
 
 
 solverstates = pygt.getSolverStates(solver_config.snapshot_prefix);
@@ -138,7 +135,7 @@ if (len(solverstates) == 0 or solverstates[-1][0] < solver_config.max_iter):
     solver, test_net = pygt.init_solver(solver_config, options)
     if (len(solverstates) > 0):
         solver.restore(solverstates[-1][1])
-    pygt.train(solver, test_net, [dataset], [test_dataset], options)
+    pygt.train(solver, test_net, [dataset], [], options)
 
 
 solverstates = pygt.getSolverStates(solver_config.snapshot_prefix);
@@ -153,7 +150,7 @@ if (solverstates[-1][0] >= solver_config.max_iter):
     solver, test_net = pygt.init_solver(solver_config, options)
     if (len(solverstates) > 0):
         solver.restore(solverstates[-1][1])
-    pygt.train(solver, test_net, [dataset], [test_dataset], options)
+    pygt.train(solver, test_net, [dataset], [], options)
     
 
 
