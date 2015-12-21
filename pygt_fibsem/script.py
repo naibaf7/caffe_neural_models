@@ -76,16 +76,21 @@ with open('net_test.prototxt', 'w') as f:
 # Load the datasets
 hdf5_raw_file = '../dataset_06/fibsem_medulla_7col/tstvol-520-1-h5/img_normalized.h5'
 hdf5_gt_file = '../dataset_06/fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_seg.h5'
+hdf5_aff_file = '../dataset_06/fibsem_medulla_7col/tstvol-520-1-h5/groundtruth_aff.h5'
 
 hdf5_raw = h5py.File(hdf5_raw_file, 'r')
 hdf5_gt = h5py.File(hdf5_gt_file, 'r')
+hdf5_aff = h5py.File(hdf5_aff_file, 'r')
 
 hdf5_raw_ds = pygt.normalize(np.asarray(hdf5_raw[hdf5_raw.keys()[0]]).astype(float32), -1, 1)
 hdf5_gt_ds = np.asarray(hdf5_gt[hdf5_gt.keys()[0]]).astype(float32)
+hdf5_aff_ds = np.asarray(hdf5_aff[hdf5_aff.keys()[0]]).astype(float32)
+
 
 dataset = {}
 dataset['data'] = hdf5_raw_ds[None, :]
 dataset['components'] = hdf5_gt_ds[None, :]
+dataset['label'] = hdf5_aff_ds[:]
 dataset['nhood'] = pygt.malis.mknhood3d()
 
 #test_dataset = {}
@@ -101,7 +106,7 @@ class TrainOptions:
     test_interval = 4000
     scale_error = True
     training_method = "affinity"
-    recompute_affinity = True
+    recompute_affinity = False
     train_device = 3
     test_device = 3
     test_net=None #'net_test.prototxt'
