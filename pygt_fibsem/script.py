@@ -106,7 +106,7 @@ class TrainOptions:
     test_interval = 4000
     scale_error = True
     training_method = "affinity"
-    recompute_affinity = False
+    recompute_affinity = True
     train_device = 3
     test_device = 3
     test_net=None #'net_test.prototxt'

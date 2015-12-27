@@ -2,6 +2,7 @@ from __future__ import print_function
 import h5py
 import numpy as np
 from numpy import float32, int32, uint8, dtype
+import sys
 
 # Relative path to where PyGreentea resides
 pygt_path = '../../PyGreentea'
@@ -57,6 +58,8 @@ class NetConf:
         return int(math.ceil(fmaps / 2.5));
     # Loss function and mode ("malis", "euclid", "softmax")
     loss_function = "euclid"
+    batchnorm = True
+    dropout = 0.2
 
 
 class TrainOptions:
@@ -66,7 +69,7 @@ class TrainOptions:
     test_interval = 40
     scale_error = True
     training_method = "affinity"
-    train_device = 0
+    train_device = 1
     test_device = 3
     test_net='net_test.prototxt'
 
@@ -75,8 +78,7 @@ options = TrainOptions()
 
 train_net_conf, test_net_conf = pygt.netgen.create_nets(netconf)
 
-# pygt.caffe.enumerate_devices(False)
-
+pygt.caffe.enumerate_devices(False)
 pygt.caffe.set_devices((options.train_device, options.test_device))
 
 with open('net_train.prototxt', 'w') as f:
@@ -91,10 +93,11 @@ solver_config = pygt.caffe.SolverParameter()
 solver_config.train_net = 'net_train.prototxt'
 solver_config.base_lr = 0.00001
 solver_config.momentum = 0.99
+solver_config.weight_decay = 0.000005
 solver_config.lr_policy = 'inv'
 solver_config.gamma = 0.0001
 solver_config.power = 0.75
-solver_config.max_iter = 4000
+solver_config.max_iter = 8000
 solver_config.snapshot = 2000
 solver_config.snapshot_prefix = 'net'
 solver_config.display = 1
