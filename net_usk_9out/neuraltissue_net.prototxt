@@ -194,7 +194,7 @@ layer {
     num_output: 128
     kernel_size: 5
     stride: 1
-    kstride: 1
+    dilation: 1
     weight_filler {
       type: "gaussian"
       std: 0.025
@@ -219,7 +219,7 @@ layer {
     pool: MAX
     kernel_size: 2
     stride: 1
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -237,7 +237,7 @@ layer {
     num_output: 128
     kernel_size: 3
     stride: 1
-    kstride: 2
+    dilation: 2
     weight_filler {
       type: "gaussian"
       std: 0.04
@@ -262,7 +262,7 @@ layer {
     pool: MAX
     kernel_size: 2
     stride: 1
-    kstride: 2
+    dilation: 2
   }
 }
 layer {
@@ -280,7 +280,7 @@ layer {
     num_output: 256
     kernel_size: 3
     stride: 1
-    kstride: 4
+    dilation: 4
     weight_filler {
       type: "gaussian"
       std: 0.04
@@ -305,7 +305,7 @@ layer {
     pool: MAX
     kernel_size: 2
     stride: 1
-    kstride: 4
+    dilation: 4
   }
 }
 layer {
@@ -323,7 +323,7 @@ layer {
     num_output: 512
     kernel_size: 3
     stride: 1
-    kstride: 8
+    dilation: 8
     weight_filler {
       type: "gaussian"
       std: 0.03

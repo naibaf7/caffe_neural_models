@@ -68,7 +68,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -104,7 +104,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -130,7 +130,7 @@ layer {
     stride: 2
     stride: 2
     pad: 0
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -157,7 +157,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -193,7 +193,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -219,7 +219,7 @@ layer {
     stride: 2
     stride: 2
     pad: 0
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -246,7 +246,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -282,7 +282,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -308,7 +308,7 @@ layer {
     stride: 2
     stride: 2
     pad: 0
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -335,7 +335,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -371,7 +371,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -407,7 +407,7 @@ layer {
       type: "constant"
       value: 1
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -434,7 +434,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -474,7 +474,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -510,7 +510,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -546,7 +546,7 @@ layer {
       type: "constant"
       value: 1
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -573,7 +573,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -613,7 +613,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -649,7 +649,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -685,7 +685,7 @@ layer {
       type: "constant"
       value: 1
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -712,7 +712,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -752,7 +752,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -788,7 +788,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {
@@ -824,7 +824,7 @@ layer {
     bias_filler {
       type: "constant"
     }
-    kstride: 1
+    dilation: 1
   }
 }
 layer {

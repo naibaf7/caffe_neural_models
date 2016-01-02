@@ -82,7 +82,7 @@ def data_layer(shape):
     data, label = L.MemoryData(dim=shape, ntop=2)
     return data, label
 
-def conv_relu(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0], kstride=[1], group=1, weight_std=0.01):
+def conv_relu(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0], dilation=[1], group=1, weight_std=0.01):
     # The convolution buffer and weight memory
     weight_mem = fsize * num_output * run_shape[-1][2]
     conv_buff = fsize * run_shape[-1][2]
@@ -97,14 +97,14 @@ def conv_relu(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0
     update += [[lambda x, i=i: x - (kernel_size[min(i,len(kernel_size)-1)] - 1) * (run_shape[-1][3][i]) for i in range(0,len(run_shape[-1][4]))]]
     update_shape(run_shape, update)
     
-    conv = L.Convolution(bottom, kernel_size=kernel_size, stride=stride, kstride=kstride,
+    conv = L.Convolution(bottom, kernel_size=kernel_size, stride=stride, dilation=dilation,
                                 num_output=num_output, pad=pad, group=group,
                                 param=[dict(lr_mult=1),dict(lr_mult=2)],
                                 weight_filler=dict(type='gaussian', std=weight_std),
                                 bias_filler=dict(type='constant'))
     return conv, L.ReLU(conv, in_place=True, negative_slope=0.005)
 
-def convolution(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0], kstride=[1], group=1, weight_std=0.01):
+def convolution(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=[0], dilation=[1], group=1, weight_std=0.01):
     # The convolution buffer and weight memory
     weight_mem = fsize * num_output * run_shape[-1][2]
     conv_buff = fsize * run_shape[-1][2]
@@ -119,24 +119,24 @@ def convolution(run_shape, bottom, num_output, kernel_size=[3], stride=[1], pad=
     update += [[lambda x, i=i: x - (kernel_size[min(i,len(kernel_size)-1)] - 1) * (run_shape[-1][3][i]) for i in range(0,len(run_shape[-1][4]))]]
     update_shape(run_shape, update)
     
-    return L.Convolution(bottom, kernel_size=kernel_size, stride=stride, kstride=kstride,
+    return L.Convolution(bottom, kernel_size=kernel_size, stride=stride, dilation=dilation,
                                 num_output=num_output, pad=pad, group=group,
                                 param=[dict(lr_mult=1),dict(lr_mult=2)],
                                 weight_filler=dict(type='gaussian', std=weight_std),
                                 bias_filler=dict(type='constant'))
 
-def max_pool(run_shape, bottom, kernel_size=[2], stride=[2], pad=[0], kstride=[1]): 
+def max_pool(run_shape, bottom, kernel_size=[2], stride=[2], pad=[0], dilation=[1]): 
     # Shape update rules
     update =  [lambda x: 0, lambda x: 0, lambda x: x]
-    update += [[lambda x, i=i: x * kstride[min(i,len(kstride)-1)] for i in range(0,len(run_shape[-1][4]))]]
+    update += [[lambda x, i=i: x * dilation[min(i,len(dilation)-1)] for i in range(0,len(run_shape[-1][4]))]]
     # Strictly speaking this update rule is not complete, but should be sufficient for USK
-    if kstride[0] == 1 and kernel_size[0] == stride[0]:
+    if dilation[0] == 1 and kernel_size[0] == stride[0]:
         update += [[lambda x, i=i: x / (kernel_size[min(i,len(kernel_size)-1)]) for i in range(0,len(run_shape[-1][4]))]]
     else:
         update += [[lambda x, i=i: x - (kernel_size[min(i,len(kernel_size)-1)] - 1) * (run_shape[-1][3][i]) for i in range(0,len(run_shape[-1][4]))]]
     update_shape(run_shape, update)
 
-    return L.Pooling(bottom, pool=P.Pooling.MAX, kernel_size=kernel_size, stride=stride, pad=pad, kstride=kstride)
+    return L.Pooling(bottom, pool=P.Pooling.MAX, kernel_size=kernel_size, stride=stride, pad=pad, dilation=dilation)
 
 def upconv(run_shape, bottom, num_output_dec, num_output_conv, weight_std=0.01, kernel_size=[2], stride=[2]):
     # Shape update rules
@@ -145,7 +145,7 @@ def upconv(run_shape, bottom, num_output_dec, num_output_conv, weight_std=0.01, 
     update += [[lambda x, i=i: kernel_size[min(i,len(kernel_size)-1)] * x for i in range(0,len(run_shape[-1][4]))]]
     update_shape(run_shape, update)
     
-    deconv = L.Deconvolution(bottom, convolution_param=dict(num_output=num_output_dec, kernel_size=kernel_size, stride=stride, pad=[0], kstride=[1], group=num_output_dec,
+    deconv = L.Deconvolution(bottom, convolution_param=dict(num_output=num_output_dec, kernel_size=kernel_size, stride=stride, pad=[0], dilation=[1], group=num_output_dec,
                                                             weight_filler=dict(type='constant', value=1), bias_term=False),
                              param=dict(lr_mult=0, decay_mult=0))
 
@@ -162,7 +162,7 @@ def upconv(run_shape, bottom, num_output_dec, num_output_conv, weight_std=0.01, 
     update += [[lambda x, i=i: x for i in range(0,len(run_shape[-1][4]))]]
     update_shape(run_shape, update)
 
-    conv = L.Convolution(deconv, num_output=num_output_conv, kernel_size=[1], stride=[1], pad=[0], kstride=[1], group=1,
+    conv = L.Convolution(deconv, num_output=num_output_conv, kernel_size=[1], stride=[1], pad=[0], dilation=[1], group=1,
                             param=[dict(lr_mult=1),dict(lr_mult=2)],
                             weight_filler=dict(type='gaussian', std=weight_std),
                             bias_filler=dict(type='constant'))
