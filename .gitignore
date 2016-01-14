@@ -1,3 +1,4 @@
+*.ipynb_checkpoints*
 *.caffemodel
 *.solverstate
 dataset_03
