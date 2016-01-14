@@ -56,7 +56,7 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 16
+    num_output: 32
     pad: 0
     kernel_size: 3
     group: 1
@@ -81,6 +81,37 @@ layer {
   }
 }
 layer {
+  name: "Dropout1"
+  type: "Dropout"
+  bottom: "Convolution1"
+  top: "Convolution1"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm1"
+  type: "BatchNorm"
+  bottom: "Convolution1"
+  top: "Convolution1"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
+  }
+}
+layer {
   name: "Convolution2"
   type: "Convolution"
   bottom: "Convolution1"
@@ -92,14 +123,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 16
+    num_output: 32
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.068041381744
+      std: 0.0481125224325
     }
     bias_filler {
       type: "constant"
@@ -114,6 +145,37 @@ layer {
   top: "Convolution2"
   relu_param {
     negative_slope: 0.005
+  }
+}
+layer {
+  name: "Dropout2"
+  type: "Dropout"
+  bottom: "Convolution2"
+  top: "Convolution2"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm2"
+  type: "BatchNorm"
+  bottom: "Convolution2"
+  top: "Convolution2"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
   }
 }
 layer {
@@ -145,14 +207,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 48
+    num_output: 128
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.068041381744
+      std: 0.0481125224325
     }
     bias_filler {
       type: "constant"
@@ -170,6 +232,37 @@ layer {
   }
 }
 layer {
+  name: "Dropout3"
+  type: "Dropout"
+  bottom: "Convolution3"
+  top: "Convolution3"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm3"
+  type: "BatchNorm"
+  bottom: "Convolution3"
+  top: "Convolution3"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
+  }
+}
+layer {
   name: "Convolution4"
   type: "Convolution"
   bottom: "Convolution3"
@@ -181,14 +274,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 48
+    num_output: 128
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0392837100659
+      std: 0.0240562612162
     }
     bias_filler {
       type: "constant"
@@ -203,6 +296,37 @@ layer {
   top: "Convolution4"
   relu_param {
     negative_slope: 0.005
+  }
+}
+layer {
+  name: "Dropout4"
+  type: "Dropout"
+  bottom: "Convolution4"
+  top: "Convolution4"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm4"
+  type: "BatchNorm"
+  bottom: "Convolution4"
+  top: "Convolution4"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
   }
 }
 layer {
@@ -234,14 +358,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 144
+    num_output: 512
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0392837100659
+      std: 0.0240562612162
     }
     bias_filler {
       type: "constant"
@@ -259,6 +383,37 @@ layer {
   }
 }
 layer {
+  name: "Dropout5"
+  type: "Dropout"
+  bottom: "Convolution5"
+  top: "Convolution5"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm5"
+  type: "BatchNorm"
+  bottom: "Convolution5"
+  top: "Convolution5"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
+  }
+}
+layer {
   name: "Convolution6"
   type: "Convolution"
   bottom: "Convolution5"
@@ -270,14 +425,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 144
+    num_output: 512
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0226804605813
+      std: 0.0120281306081
     }
     bias_filler {
       type: "constant"
@@ -292,6 +447,37 @@ layer {
   top: "Convolution6"
   relu_param {
     negative_slope: 0.005
+  }
+}
+layer {
+  name: "Dropout6"
+  type: "Dropout"
+  bottom: "Convolution6"
+  top: "Convolution6"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm6"
+  type: "BatchNorm"
+  bottom: "Convolution6"
+  top: "Convolution6"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
   }
 }
 layer {
@@ -323,14 +509,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 432
+    num_output: 2048
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0226804605813
+      std: 0.0120281306081
     }
     bias_filler {
       type: "constant"
@@ -348,6 +534,37 @@ layer {
   }
 }
 layer {
+  name: "Dropout7"
+  type: "Dropout"
+  bottom: "Convolution7"
+  top: "Convolution7"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm7"
+  type: "BatchNorm"
+  bottom: "Convolution7"
+  top: "Convolution7"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
+  }
+}
+layer {
   name: "Convolution8"
   type: "Convolution"
   bottom: "Convolution7"
@@ -359,14 +576,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 432
+    num_output: 2048
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.013094570022
+      std: 0.00601406530406
     }
     bias_filler {
       type: "constant"
@@ -384,6 +601,37 @@ layer {
   }
 }
 layer {
+  name: "Dropout8"
+  type: "Dropout"
+  bottom: "Convolution8"
+  top: "Convolution8"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm8"
+  type: "BatchNorm"
+  bottom: "Convolution8"
+  top: "Convolution8"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
+  }
+}
+layer {
   name: "Deconvolution1"
   type: "Deconvolution"
   bottom: "Convolution8"
@@ -393,13 +641,13 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 432
+    num_output: 2048
     bias_term: false
     pad: 0
     kernel_size: 2
     kernel_size: 2
     kernel_size: 2
-    group: 432
+    group: 2048
     stride: 2
     stride: 2
     stride: 2
@@ -422,14 +670,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 144
+    num_output: 512
     pad: 0
     kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.013094570022
+      std: 0.00601406530406
     }
     bias_filler {
       type: "constant"
@@ -462,14 +710,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 144
+    num_output: 512
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0160375074775
+      std: 0.008505172718
     }
     bias_filler {
       type: "constant"
@@ -487,6 +735,37 @@ layer {
   }
 }
 layer {
+  name: "Dropout9"
+  type: "Dropout"
+  bottom: "Convolution10"
+  top: "Convolution10"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm9"
+  type: "BatchNorm"
+  bottom: "Convolution10"
+  top: "Convolution10"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
+  }
+}
+layer {
   name: "Convolution11"
   type: "Convolution"
   bottom: "Convolution10"
@@ -498,14 +777,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 144
+    num_output: 512
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0226804605813
+      std: 0.0120281306081
     }
     bias_filler {
       type: "constant"
@@ -523,6 +802,37 @@ layer {
   }
 }
 layer {
+  name: "Dropout10"
+  type: "Dropout"
+  bottom: "Convolution11"
+  top: "Convolution11"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm10"
+  type: "BatchNorm"
+  bottom: "Convolution11"
+  top: "Convolution11"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
+  }
+}
+layer {
   name: "Deconvolution2"
   type: "Deconvolution"
   bottom: "Convolution11"
@@ -532,13 +842,13 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 144
+    num_output: 512
     bias_term: false
     pad: 0
     kernel_size: 2
     kernel_size: 2
     kernel_size: 2
-    group: 144
+    group: 512
     stride: 2
     stride: 2
     stride: 2
@@ -561,14 +871,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 48
+    num_output: 128
     pad: 0
     kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0226804605813
+      std: 0.0120281306081
     }
     bias_filler {
       type: "constant"
@@ -601,14 +911,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 48
+    num_output: 128
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0277777777778
+      std: 0.017010345436
     }
     bias_filler {
       type: "constant"
@@ -626,6 +936,37 @@ layer {
   }
 }
 layer {
+  name: "Dropout11"
+  type: "Dropout"
+  bottom: "Convolution13"
+  top: "Convolution13"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm11"
+  type: "BatchNorm"
+  bottom: "Convolution13"
+  top: "Convolution13"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
+  }
+}
+layer {
   name: "Convolution14"
   type: "Convolution"
   bottom: "Convolution13"
@@ -637,14 +978,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 48
+    num_output: 128
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0392837100659
+      std: 0.0240562612162
     }
     bias_filler {
       type: "constant"
@@ -662,6 +1003,37 @@ layer {
   }
 }
 layer {
+  name: "Dropout12"
+  type: "Dropout"
+  bottom: "Convolution14"
+  top: "Convolution14"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm12"
+  type: "BatchNorm"
+  bottom: "Convolution14"
+  top: "Convolution14"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
+  }
+}
+layer {
   name: "Deconvolution3"
   type: "Deconvolution"
   bottom: "Convolution14"
@@ -671,13 +1043,13 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 48
+    num_output: 128
     bias_term: false
     pad: 0
     kernel_size: 2
     kernel_size: 2
     kernel_size: 2
-    group: 48
+    group: 128
     stride: 2
     stride: 2
     stride: 2
@@ -700,14 +1072,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 16
+    num_output: 32
     pad: 0
     kernel_size: 1
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0392837100659
+      std: 0.0240562612162
     }
     bias_filler {
       type: "constant"
@@ -740,14 +1112,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 16
+    num_output: 32
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.0481125224325
+      std: 0.034020690872
     }
     bias_filler {
       type: "constant"
@@ -765,6 +1137,37 @@ layer {
   }
 }
 layer {
+  name: "Dropout13"
+  type: "Dropout"
+  bottom: "Convolution16"
+  top: "Convolution16"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm13"
+  type: "BatchNorm"
+  bottom: "Convolution16"
+  top: "Convolution16"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
+  }
+}
+layer {
   name: "Convolution17"
   type: "Convolution"
   bottom: "Convolution16"
@@ -776,14 +1179,14 @@ layer {
     lr_mult: 2
   }
   convolution_param {
-    num_output: 16
+    num_output: 32
     pad: 0
     kernel_size: 3
     group: 1
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.068041381744
+      std: 0.0481125224325
     }
     bias_filler {
       type: "constant"
@@ -798,6 +1201,37 @@ layer {
   top: "Convolution17"
   relu_param {
     negative_slope: 0.005
+  }
+}
+layer {
+  name: "Dropout14"
+  type: "Dropout"
+  bottom: "Convolution17"
+  top: "Convolution17"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "BatchNorm14"
+  type: "BatchNorm"
+  bottom: "Convolution17"
+  top: "Convolution17"
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  batch_norm_param {
+    use_global_stats: false
+    moving_average_fraction: 0.95
   }
 }
 layer {
@@ -819,7 +1253,7 @@ layer {
     stride: 1
     weight_filler {
       type: "gaussian"
-      std: 0.068041381744
+      std: 0.0481125224325
     }
     bias_filler {
       type: "constant"
