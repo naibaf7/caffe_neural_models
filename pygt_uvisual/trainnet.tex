@@ -1,0 +1,344 @@
+
+\documentclass{article}
+\usepackage{incgraph}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,shadows,calc,fit,arrows,decorations.pathreplacing,decorations.markings,decorations.pathmorphing,patterns,shapes,shapes.multipart}
+\usepackage[OT1]{fontenc}
+\usepackage[british]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage[export]{adjustbox}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage[urldate=long,backend=biber,sorting=none,natbib=true,style=numeric]{biblatex}
+\usepackage{eso-pic}
+\usepackage{xspace}
+\usepackage[justification=centering]{caption}
+\usepackage{siunitx}
+\usepackage{calc}
+\usepackage{pgf}
+\usepackage{fp}
+\pgfdeclarelayer{bg}
+\pgfsetlayers{bg,main}
+
+\begin{document}
+    \begin{inctext}
+        {
+        
+        \definecolor{convcolor}{RGB}{255, 127, 14}
+        \definecolor{poolcolor}{RGB}{31, 119, 180}
+        \definecolor{upconvcolor}{RGB}{140, 86, 75}
+        \definecolor{othercolor}{RGB}{219, 219, 141}
+
+        \tikzstyle{convline} = [line width=3.0pt, draw, -latex', color=convcolor]
+        \tikzstyle{poolline} = [line width=3.0pt, draw, -latex', color=poolcolor]
+        \tikzstyle{upconvline} = [line width=3.0pt, draw, -latex', color=upconvcolor]
+        \tikzstyle{otherline} = [line width=3.0pt, draw, -latex', color=othercolor]
+        
+        \tikzset{
+        incgraphic/.style n args={3}{
+        path picture={
+            \pgfmathparse{(#2)}\let\vw\pgfmathresult
+            \pgfmathparse{(#3)}\let\vh\pgfmathresult
+            \node[anchor=north] at (path picture bounding box.north){
+                \includegraphics*[height=\vh cm, width=\vw cm]{dump/#1.png}
+            };}, draw, inner sep=0.0cm, text centered, minimum height=#3cm, minimum width=(#2cm)}
+        }
+        
+        \begin{tikzpicture}[node distance = 1cm and 0.5cm, auto]
+                    
+            \node[incgraphic={data}{3.136}{3.136}, , xshift=0cm, yshift=0cm](data){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (data.north) {$1$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (data.south west) {$196^2$};
+                        
+            \node[incgraphic={conv_U-0_LD-0_C-0}{3.104}{3.104}, right =of data, xshift=0cm, yshift=0cm](conv_U-0_LD-0_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LD-0_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LD-0_C-0.south west) {$194^2$};
+                        
+            \node[incgraphic={conv_U-0_LD-0_C-1}{3.072}{3.072}, right =of conv_U-0_LD-0_C-0, xshift=0cm, yshift=0cm](conv_U-0_LD-0_C-1){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LD-0_C-1.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LD-0_C-1.south west) {$192^2$};
+                        
+            \node[incgraphic={pool_U-0_LD-0_P-0}{1.536}{1.536}, below =of conv_U-0_LD-0_C-1, xshift=0cm, yshift=0cm](pool_U-0_LD-0_P-0){};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (pool_U-0_LD-0_P-0.south west) {$96^2$};
+                        
+            \node[incgraphic={conv_U-0_LD-1_C-0}{1.504}{1.504}, right =of pool_U-0_LD-0_P-0, xshift=0cm, yshift=0cm](conv_U-0_LD-1_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LD-1_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LD-1_C-0.south west) {$94^2$};
+                        
+            \node[incgraphic={conv_U-0_LD-1_C-1}{1.472}{1.472}, right =of conv_U-0_LD-1_C-0, xshift=0cm, yshift=0cm](conv_U-0_LD-1_C-1){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LD-1_C-1.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LD-1_C-1.south west) {$92^2$};
+                        
+            \node[incgraphic={pool_U-0_LD-1_P-0}{0.736}{0.736}, below =of conv_U-0_LD-1_C-1, xshift=0cm, yshift=0cm](pool_U-0_LD-1_P-0){};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (pool_U-0_LD-1_P-0.south west) {$46^2$};
+                        
+            \node[incgraphic={conv_U-0_LD-2_C-0}{0.704}{0.704}, right =of pool_U-0_LD-1_P-0, xshift=0cm, yshift=0cm](conv_U-0_LD-2_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LD-2_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LD-2_C-0.south west) {$44^2$};
+                        
+            \node[incgraphic={conv_U-0_LD-2_C-1}{0.672}{0.672}, right =of conv_U-0_LD-2_C-0, xshift=0cm, yshift=0cm](conv_U-0_LD-2_C-1){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LD-2_C-1.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LD-2_C-1.south west) {$42^2$};
+                        
+            \node[incgraphic={pool_U-0_LD-2_P-0}{0.336}{0.336}, below =of conv_U-0_LD-2_C-1, xshift=0cm, yshift=0cm](pool_U-0_LD-2_P-0){};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (pool_U-0_LD-2_P-0.south west) {$21^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-3_C-0}{0.304}{0.304}, right =of pool_U-0_LD-2_P-0, xshift=0cm, yshift=0cm](conv_U-0_LU-3_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-3_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-3_C-0.south west) {$19^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-3_C-1}{0.272}{0.272}, right =of conv_U-0_LU-3_C-0, xshift=0cm, yshift=0cm](conv_U-0_LU-3_C-1){};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-3_C-1.south west) {$17^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-2_M-0}{0.544}{0.544}, above =of conv_U-0_LU-3_C-1, xshift=0cm, yshift=0cm](conv_U-0_LU-2_M-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_M-0.north) {$8$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_M-0.south west) {$34^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-0_C-0}{0.512}{0.512}, right =of conv_U-0_LU-2_M-0, xshift=0cm, yshift=0cm](conv_U-0_LU-0_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_C-0.south west) {$32^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-0_C-1}{0.48}{0.48}, right =of conv_U-0_LU-0_C-0, xshift=0cm, yshift=0cm](conv_U-0_LU-0_C-1){};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_C-1.south west) {$30^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-1_M-0}{0.96}{0.96}, above =of conv_U-0_LU-0_C-1, xshift=0cm, yshift=0cm](conv_U-0_LU-1_M-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_M-0.north) {$8$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_M-0.south west) {$60^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-1_C-0}{0.928}{0.928}, right =of conv_U-0_LU-1_M-0, xshift=0cm, yshift=0cm](conv_U-0_LU-1_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_C-0.south west) {$58^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-1_C-1}{0.896}{0.896}, right =of conv_U-0_LU-1_C-0, xshift=0cm, yshift=0cm](conv_U-0_LU-1_C-1){};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_C-1.south west) {$56^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-0_M-0}{1.792}{1.792}, above =of conv_U-0_LU-1_C-1, xshift=0cm, yshift=0cm](conv_U-0_LU-0_M-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_M-0.north) {$8$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_M-0.south west) {$112^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-2_C-0}{1.76}{1.76}, right =of conv_U-0_LU-0_M-0, xshift=0cm, yshift=0cm](conv_U-0_LU-2_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-0.south west) {$110^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-2_C-1}{1.728}{1.728}, right =of conv_U-0_LU-2_C-0, xshift=0cm, yshift=0cm](conv_U-0_LU-2_C-1){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-1.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-1.south west) {$108^2$};
+                        
+            \node[incgraphic={conv_out}{1.728}{1.728}, right =of conv_U-0_LU-2_C-1, xshift=0cm, yshift=0cm](conv_out){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_out.north) {$3$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_out.south west) {$108^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-2_M-0}{0.544}{0.544}, above =of conv_U-0_LU-3_C-1, xshift=0cm, yshift=0cm](conv_U-0_LU-2_M-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_M-0.north) {$8$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_M-0.south west) {$34^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-0_C-0}{0.512}{0.512}, right =of conv_U-0_LU-2_M-0, xshift=0cm, yshift=0cm](conv_U-0_LU-0_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_C-0.south west) {$32^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-0_C-1}{0.48}{0.48}, right =of conv_U-0_LU-0_C-0, xshift=0cm, yshift=0cm](conv_U-0_LU-0_C-1){};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_C-1.south west) {$30^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-1_M-0}{0.96}{0.96}, above =of conv_U-0_LU-0_C-1, xshift=0cm, yshift=0cm](conv_U-0_LU-1_M-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_M-0.north) {$8$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_M-0.south west) {$60^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-1_C-0}{0.928}{0.928}, right =of conv_U-0_LU-1_M-0, xshift=0cm, yshift=0cm](conv_U-0_LU-1_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_C-0.south west) {$58^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-1_C-1}{0.896}{0.896}, right =of conv_U-0_LU-1_C-0, xshift=0cm, yshift=0cm](conv_U-0_LU-1_C-1){};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_C-1.south west) {$56^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-0_M-0}{1.792}{1.792}, above =of conv_U-0_LU-1_C-1, xshift=0cm, yshift=0cm](conv_U-0_LU-0_M-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_M-0.north) {$8$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_M-0.south west) {$112^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-2_C-0}{1.76}{1.76}, right =of conv_U-0_LU-0_M-0, xshift=0cm, yshift=0cm](conv_U-0_LU-2_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-0.south west) {$110^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-2_C-1}{1.728}{1.728}, right =of conv_U-0_LU-2_C-0, xshift=0cm, yshift=0cm](conv_U-0_LU-2_C-1){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-1.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-1.south west) {$108^2$};
+                        
+            \node[incgraphic={conv_out}{1.728}{1.728}, right =of conv_U-0_LU-2_C-1, xshift=0cm, yshift=0cm](conv_out){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_out.north) {$3$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_out.south west) {$108^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-1_M-0}{0.96}{0.96}, above =of conv_U-0_LU-0_C-1, xshift=0cm, yshift=0cm](conv_U-0_LU-1_M-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_M-0.north) {$8$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_M-0.south west) {$60^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-1_C-0}{0.928}{0.928}, right =of conv_U-0_LU-1_M-0, xshift=0cm, yshift=0cm](conv_U-0_LU-1_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_C-0.south west) {$58^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-1_C-1}{0.896}{0.896}, right =of conv_U-0_LU-1_C-0, xshift=0cm, yshift=0cm](conv_U-0_LU-1_C-1){};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-1_C-1.south west) {$56^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-0_M-0}{1.792}{1.792}, above =of conv_U-0_LU-1_C-1, xshift=0cm, yshift=0cm](conv_U-0_LU-0_M-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_M-0.north) {$8$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_M-0.south west) {$112^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-2_C-0}{1.76}{1.76}, right =of conv_U-0_LU-0_M-0, xshift=0cm, yshift=0cm](conv_U-0_LU-2_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-0.south west) {$110^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-2_C-1}{1.728}{1.728}, right =of conv_U-0_LU-2_C-0, xshift=0cm, yshift=0cm](conv_U-0_LU-2_C-1){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-1.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-1.south west) {$108^2$};
+                        
+            \node[incgraphic={conv_out}{1.728}{1.728}, right =of conv_U-0_LU-2_C-1, xshift=0cm, yshift=0cm](conv_out){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_out.north) {$3$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_out.south west) {$108^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-0_M-0}{1.792}{1.792}, above =of conv_U-0_LU-1_C-1, xshift=0cm, yshift=0cm](conv_U-0_LU-0_M-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_M-0.north) {$8$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-0_M-0.south west) {$112^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-2_C-0}{1.76}{1.76}, right =of conv_U-0_LU-0_M-0, xshift=0cm, yshift=0cm](conv_U-0_LU-2_C-0){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-0.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-0.south west) {$110^2$};
+                        
+            \node[incgraphic={conv_U-0_LU-2_C-1}{1.728}{1.728}, right =of conv_U-0_LU-2_C-0, xshift=0cm, yshift=0cm](conv_U-0_LU-2_C-1){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-1.north) {$4$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_U-0_LU-2_C-1.south west) {$108^2$};
+                        
+            \node[incgraphic={conv_out}{1.728}{1.728}, right =of conv_U-0_LU-2_C-1, xshift=0cm, yshift=0cm](conv_out){};
+                        
+            \node[rotate=0, anchor=south, xshift=0cm, yshift=0cm] at (conv_out.north) {$3$};
+                        
+            \node[rotate=90, anchor=south west, xshift=0cm, yshift=0cm] at (conv_out.south west) {$108^2$};
+                        
+            \path[convline] (data) -- (conv_U-0_LD-0_C-0);
+                            
+            \path[convline] (conv_U-0_LD-0_C-0) -- (conv_U-0_LD-0_C-1);
+                            
+            \path[poolline] (conv_U-0_LD-0_C-1) -- (pool_U-0_LD-0_P-0);
+                            
+            \path[convline] (pool_U-0_LD-0_P-0) -- (conv_U-0_LD-1_C-0);
+                            
+            \path[convline] (conv_U-0_LD-1_C-0) -- (conv_U-0_LD-1_C-1);
+                            
+            \path[poolline] (conv_U-0_LD-1_C-1) -- (pool_U-0_LD-1_P-0);
+                            
+            \path[convline] (pool_U-0_LD-1_P-0) -- (conv_U-0_LD-2_C-0);
+                            
+            \path[convline] (conv_U-0_LD-2_C-0) -- (conv_U-0_LD-2_C-1);
+                            
+            \path[poolline] (conv_U-0_LD-2_C-1) -- (pool_U-0_LD-2_P-0);
+                            
+            \path[convline] (pool_U-0_LD-2_P-0) -- (conv_U-0_LU-3_C-0);
+                            
+            \path[convline] (conv_U-0_LU-3_C-0) -- (conv_U-0_LU-3_C-1);
+                            
+            \path[otherline] (conv_U-0_LD-2_C-1) -- (conv_U-0_LU-2_M-0);
+                            
+            \path[upconvline] (conv_U-0_LU-3_C-1) -- (conv_U-0_LU-2_M-0);
+                            
+            \path[convline] (conv_U-0_LU-2_M-0) -- (conv_U-0_LU-0_C-0);
+                            
+            \path[convline] (conv_U-0_LU-0_C-0) -- (conv_U-0_LU-0_C-1);
+                            
+            \path[otherline] (conv_U-0_LD-1_C-1) -- (conv_U-0_LU-1_M-0);
+                            
+            \path[upconvline] (conv_U-0_LU-0_C-1) -- (conv_U-0_LU-1_M-0);
+                            
+            \path[convline] (conv_U-0_LU-1_M-0) -- (conv_U-0_LU-1_C-0);
+                            
+            \path[convline] (conv_U-0_LU-1_C-0) -- (conv_U-0_LU-1_C-1);
+                            
+            \path[otherline] (conv_U-0_LD-0_C-1) -- (conv_U-0_LU-0_M-0);
+                            
+            \path[upconvline] (conv_U-0_LU-1_C-1) -- (conv_U-0_LU-0_M-0);
+                            
+            \path[convline] (conv_U-0_LU-0_M-0) -- (conv_U-0_LU-2_C-0);
+                            
+            \path[convline] (conv_U-0_LU-2_C-0) -- (conv_U-0_LU-2_C-1);
+                            
+            \path[convline] (conv_U-0_LU-2_C-1) -- (conv_out);
+                            
+        \end{tikzpicture}
+        }
+    \end{inctext}
+\end{document}
+                    

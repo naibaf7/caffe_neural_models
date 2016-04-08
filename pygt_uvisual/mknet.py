@@ -52,9 +52,9 @@ netconf.output_shape = outshape[index]
 netconf.fmap_start = 4
 
 netconf.loss_function = "euclid"
-train_net_conf_euclid, test_net_conf = pygt.netgen.create_nets(netconf)
+train_net_conf_euclid, test_net_conf, train_net_tikzgraph, test_net_tikzgraph = pygt.netgen.create_nets(netconf)
 netconf.loss_function = "malis"
-train_net_conf_malis, test_net_conf = pygt.netgen.create_nets(netconf)
+train_net_conf_malis, test_net_conf, train_net_tikzgraph, test_net_tikzgraph = pygt.netgen.create_nets(netconf)
 
 with open('net_train_euclid.prototxt', 'w') as f:
     print(train_net_conf_euclid, file=f)
@@ -62,4 +62,9 @@ with open('net_train_malis.prototxt', 'w') as f:
     print(train_net_conf_malis, file=f)
 with open('net_test.prototxt', 'w') as f:
     print(test_net_conf, file=f)
+    
+with open('trainnet.tex', 'w') as f:
+    print(train_net_tikzgraph, file=f)
+with open('testnet.tex', 'w') as f:
+    print(test_net_tikzgraph, file=f)
 

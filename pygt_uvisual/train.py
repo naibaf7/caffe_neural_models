@@ -63,7 +63,7 @@ options = TrainOptions()
 # Set solver options
 solver_config = pygt.caffe.SolverParameter()
 solver_config.train_net = 'net_train_euclid.prototxt'
-solver_config.base_lr = 0.00001
+solver_config.base_lr = 0.0001
 solver_config.momentum = 0.99
 solver_config.weight_decay = 0.000005
 solver_config.lr_policy = 'inv'
